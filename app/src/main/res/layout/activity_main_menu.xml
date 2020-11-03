@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/menubackgound"
+    android:id="@+id/activity_main_menu"
+    >
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/playBtn"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="40dp"
+        android:gravity="center"
+        style="@style/title"
+        />
+
+    <Button
+        android:id="@+id/playBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/menu_btn"
+        android:text="@string/menu_home"
+        style="@style/menu_btn_text"
+        />
+
+    <Button
+        android:id="@+id/mymusicBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@id/playBtn"
+        app:layout_constraintRight_toRightOf="@id/playBtn"
+        app:layout_constraintTop_toBottomOf="@id/playBtn"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/menu_btn"
+        android:text="@string/menu_gallery"
+        style="@style/menu_btn_text"
+        />
+
+    <Button
+        android:id="@+id/helpBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@id/mymusicBtn"
+        app:layout_constraintRight_toRightOf="@id/mymusicBtn"
+        app:layout_constraintTop_toBottomOf="@id/mymusicBtn"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/menu_btn"
+        android:text="@string/menu_slideshow"
+        style="@style/menu_btn_text"
+        />
+
+    <ImageButton
+        android:id="@+id/setting"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/title"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="45dp"
+        android:background="@drawable/wrench"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

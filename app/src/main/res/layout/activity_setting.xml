@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/settingTitle"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/action_settings"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        style="@style/title"/>
+
+    <TextView
+        android:id="@+id/instrumentsName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@id/settingTitle"
+        app:layout_constraintTop_toBottomOf="@id/settingTitle"
+        android:layout_marginStart="170dp"
+        android:layout_marginTop="30dp"
+        style="@style/text"
+        android:text="@string/Instrument"
+        />
+
+    <Spinner
+        android:id="@+id/instruments"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="56dp"
+        app:layout_constraintLeft_toRightOf="@id/instrumentsName"
+        app:layout_constraintTop_toTopOf="@id/instrumentsName" />
+
+    <TextView
+        android:id="@+id/recordName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@id/instrumentsName"
+        app:layout_constraintTop_toBottomOf="@id/instrumentsName"
+        android:layout_marginTop="20dp"
+        style="@style/text"
+        android:text="@string/record"
+        />
+
+    <RadioButton
+        android:id="@+id/soundBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/recordName"
+        app:layout_constraintTop_toTopOf="@id/recordName"
+        android:layout_marginStart="100dp"
+        android:text="sound"
+        android:textSize="20sp"
+        />
+
+    <RadioButton
+        android:id="@+id/videoBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/soundBtn"
+        app:layout_constraintTop_toTopOf="@id/soundBtn"
+        android:layout_marginStart="30dp"
+        android:text="video"
+        android:textSize="20sp"
+        />
+
+    <TextView
+        android:id="@+id/metronomeName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@id/recordName"
+        app:layout_constraintTop_toBottomOf="@id/recordName"
+        android:layout_marginTop="20dp"
+        style="@style/text"
+        android:text="@string/metronome"
+        />
+
+    <Spinner
+        android:id="@+id/metronome"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="56dp"
+        app:layout_constraintLeft_toRightOf="@id/metronomeName"
+        app:layout_constraintTop_toTopOf="@id/metronomeName"
+
+        />
+
+
+    <TextView
+        android:id="@+id/soundName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@id/metronomeName"
+        app:layout_constraintTop_toBottomOf="@id/metronomeName"
+        android:layout_marginTop="20dp"
+        style="@style/text"
+        android:text="@string/sound"
+        />
+
+    <SeekBar
+        android:id="@+id/sound"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/soundName"
+        app:layout_constraintTop_toTopOf="@id/soundName"
+        android:layout_marginStart="100dp"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

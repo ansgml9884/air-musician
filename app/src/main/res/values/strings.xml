@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">AirMusician</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">PLAY</string>
+    <string name="menu_gallery">MY MUSIC</string>
+    <string name="menu_slideshow">HELP</string>
+    <string name="Instrument">Instrument</string>
+    <string name="record">Record</string>
+    <string name="metronome">Metronome</string>
+    <string name="sound">Sound</string>
+
+    <string name="title">AIR MUSICIAN</string>
+
+</resources>
