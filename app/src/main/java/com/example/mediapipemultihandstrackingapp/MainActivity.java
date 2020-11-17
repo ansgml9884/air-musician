@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                         eglManager.getNativeContext(),
                         BINARY_GRAPH_NAME,
                         INPUT_VIDEO_STREAM_NAME,
-                        OUTPUT_VIDEO_STREAM_NAME);
+                        INPUT_VIDEO_STREAM_NAME);
         processor.getVideoSurfaceOutput().setFlipY(FLIP_FRAMES_VERTICALLY);
         processor.addPacketCallback(
                 OUTPUT_LANDMARKS_STREAM_NAME,
