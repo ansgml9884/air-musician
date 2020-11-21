@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <SurfaceView
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:id="@+id/surfaceView"
+        />
+
+    <Button
+        android:id="@+id/recordBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="record"/>
+    <Button
+        android:id="@+id/recordStopBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="recordStop"/>
+    <Button
+        android:id="@+id/playBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="play"/>
+    <Button
+        android:id="@+id/playStopBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="stop"/>
+
+</LinearLayout>

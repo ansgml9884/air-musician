@@ -8,8 +8,10 @@
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
@@ -35,6 +37,8 @@
         </activity>
         <activity android:name=".MainActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".VideoCapture"
+            android:screenOrientation="portrait"/>
         <activity android:name=".MainMenuActivity"
             android:screenOrientation="landscape"/>
         <activity android:name=".SettingActivity"
@@ -44,7 +48,7 @@
         <activity android:name=".HelpActivity"
             android:screenOrientation="landscape"/>
         <activity android:name=".RecordAtivity"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="portrait"/>
         <activity android:name=".DeveloperActivity"
             android:screenOrientation="landscape"
             android:usesCleartextTraffic="true"/>

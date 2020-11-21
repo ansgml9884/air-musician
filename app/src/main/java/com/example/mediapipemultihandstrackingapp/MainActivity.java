@@ -2,6 +2,7 @@ package com.example.mediapipemultihandstrackingapp;
 
 import android.content.Intent;
 import android.graphics.SurfaceTexture;
+import android.media.MediaRecorder;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         setupPreviewDisplayView();
 
         ImageButton backImageBtn = (ImageButton)findViewById(R.id.back_img_btn);
+        ImageButton recImageBtn = (ImageButton)findViewById(R.id.rec_img_btn);
         //뒤로가기 버튼
         backImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,7 +78,16 @@ public class MainActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
         });
-
+        //녹화하기 버튼
+        recImageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(
+                        getApplicationContext(),
+                        VideoCapture.class);
+                startActivity(intent);
+            }
+        });
 
 
 
