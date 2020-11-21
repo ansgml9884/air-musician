@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="100dp">
+
+    <ImageView
+        android:id="@+id/video_thumbnail"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="20dp"
+        android:layout_gravity="center"
+        android:layout_width="100dp"
+        android:layout_height="80dp"
+        android:background="#ffffff">
+    </ImageView>
+
+    <LinearLayout
+        android:layout_width="360dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:gravity="center"
+        >
+        <TextView
+            android:id="@+id/video_name"
+            android:layout_width="200dp"
+            android:layout_height="20dp"
+            android:text="동영상 이름">
+        </TextView>
+        <TextView
+            android:layout_marginLeft="20dp"
+            android:id="@+id/video_date"
+            android:layout_width="150dp"
+            android:layout_height="20dp"
+            android:text="동영상 날짜">
+        </TextView>
+        <TextView
+            android:layout_marginLeft="20dp"
+            android:id="@+id/video_duration"
+            android:layout_width="150dp"
+            android:layout_height="20dp"
+            android:text="동영상 길이">
+        </TextView>
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="250dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/videoPlay"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/play" />
+
+        <ImageButton
+            android:id="@+id/videoShare"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/share_social_icon"
+            />
+
+        <ImageButton
+            android:id="@+id/videoDelete"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/trash_bin_icon"
+            />
+    </LinearLayout>
+</LinearLayout>
+
+
