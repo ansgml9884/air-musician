@@ -77,12 +77,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
-
-
-    // Initialize asset manager so that MediaPipe native libraries can access the app assets, e.g.,
-        // binary graphs.
         AndroidAssetUtil.initializeNativeAssetManager(this);
         eglManager = new EglManager(null);
         processor =
