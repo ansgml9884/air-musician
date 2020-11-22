@@ -1,7 +1,12 @@
 package com.example.mediapipemultihandstrackingapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.SurfaceTexture;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
+import android.os.Build;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
@@ -13,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 
+import com.example.mediapipemultihandstrackingapp.util.SoundManager;
 import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmark;
 import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmarkList;
 import com.google.mediapipe.components.CameraHelper;
@@ -37,6 +43,9 @@ public class MainActivity extends AppCompatActivity {
     // This is needed because OpenGL represents images assuming the image origin is at the bottom-left
     // corner, whereas MediaPipe in general assumes the image origin is at top-left.
     private static final boolean FLIP_FRAMES_VERTICALLY = true;
+
+
+
     static {
         // Load all native libraries needed by the app.
         System.loadLibrary("mediapipe_jni");
@@ -63,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         previewDisplayView = new SurfaceView(this);
         setupPreviewDisplayView();
-
+        SoundManager.initSounds(getApplicationContext());
         ImageButton backImageBtn = (ImageButton)findViewById(R.id.back_img_btn);
         //뒤로가기 버튼
         backImageBtn.setOnClickListener(new View.OnClickListener() {
@@ -100,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
                                     + "] "
                                     + getMultiHandLandmarksDebugString(multiHandLandmarks));
                 });
+
         PermissionHelper.checkAndRequestCameraPermissions(this);
     }
     @Override
@@ -187,6 +197,13 @@ public class MainActivity extends AppCompatActivity {
                                 + landmark.getZ()
                                 + ")\n";
                 ++landmarkIndex;
+
+                ///////////////////////////////////////
+                //x 자표가 0.5 이상일때 소리나기
+                if(landmark.getX() > 0.5) {
+                    SoundManager.play(SoundManager.DING_DONG);
+                }
+                //////////////////////////////////////
             }
             ++handIndex;
         }

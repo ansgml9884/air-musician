@@ -7,10 +7,12 @@ import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 public class MyMusicActivity extends AppCompatActivity {
     private Cursor videocursor;
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private MyMusicListAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
 
     @Override
@@ -69,6 +71,7 @@ public class MyMusicActivity extends AppCompatActivity {
             int createDate = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED);
 
             while (cursor.moveToNext()) {
+
                 long id = cursor.getLong(idColumn);
                 String name = cursor.getString(nameColumn);
                 int duration = cursor.getInt(durationColumn)/1000;
