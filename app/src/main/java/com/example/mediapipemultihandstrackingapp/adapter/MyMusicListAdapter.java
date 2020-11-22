@@ -1,9 +1,12 @@
 package com.example.mediapipemultihandstrackingapp.adapter;
 
 import android.content.Context;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,12 +19,21 @@ public class MyMusicListAdapter extends RecyclerView.Adapter<MyMusicListAdapter.
 
     private List<RecordVideoModel> mData = null ;
 
+
+    public interface ItemClickListener{
+        public void onClick(View view, int pos);
+    }
+
+
     // 아이템 뷰를 저장하는 뷰홀더 클래스.
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView videoName;
         TextView videoDate;
         TextView videoDuration;
         ImageView videoThumnail;
+        ImageButton playBtn;
+        ImageButton deleteBtn;
+        ImageButton shareBtn;
 
         ViewHolder(View itemView) {
             super(itemView) ;
@@ -29,25 +41,15 @@ public class MyMusicListAdapter extends RecyclerView.Adapter<MyMusicListAdapter.
             videoDate = itemView.findViewById(R.id.video_date);
             videoDuration = itemView.findViewById(R.id.video_duration);
             videoThumnail = itemView.findViewById(R.id.video_thumbnail);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int pos = getAdapterPosition() ;
-                    if (pos != RecyclerView.NO_POSITION) {
-                        System.out.println(pos);
-                    }
-                }
-            });
-
-
+            playBtn = itemView.findViewById(R.id.videoPlay);
+            deleteBtn = itemView.findViewById(R.id.videoDelete);
+            shareBtn = itemView.findViewById(R.id.videoShare);
         }
     }
 
+
     // 생성자에서 데이터 리스트 객체를 전달받음.
-    public MyMusicListAdapter(List<RecordVideoModel> list) {
-        mData = list ;
-    }
+    public MyMusicListAdapter(List<RecordVideoModel> list) { mData = list ; }
     // onCreateViewHolder() - 아이템 뷰를 위한 뷰홀더 객체 생성하여 리턴.
     @Override
     public MyMusicListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -73,9 +75,4 @@ public class MyMusicListAdapter extends RecyclerView.Adapter<MyMusicListAdapter.
         return mData.size() ;
     }
 
-
-    public interface OnItemClickListener
-    {
-        void onItemClick(View v, int pos);
-    }
 }
