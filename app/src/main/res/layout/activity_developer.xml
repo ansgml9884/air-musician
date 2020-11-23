@@ -33,6 +33,7 @@
 
 
     <VideoView
+
         android:id="@+id/junsoo"
         android:layout_width="300dp"
         android:layout_height="150dp"
@@ -58,7 +59,7 @@
            android:layout_height="wrap_content"
            android:layout_marginLeft="50dp"
            android:text="BBO"
-        style="@style/dev_text1"
+                    style="@style/dev_text1"
              />
         <TextView
             android:id="@+id/nana"

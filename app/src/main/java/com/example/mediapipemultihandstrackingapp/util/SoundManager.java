@@ -2,7 +2,6 @@ package com.example.mediapipemultihandstrackingapp.util;
 
 import android.content.Context;
 import android.media.AudioAttributes;
-import android.media.AudioManager;
 import android.media.SoundPool;
 
 import com.example.mediapipemultihandstrackingapp.R;
