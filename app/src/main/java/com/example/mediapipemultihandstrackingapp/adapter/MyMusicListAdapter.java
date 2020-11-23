@@ -12,12 +12,16 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.mediapipemultihandstrackingapp.MyMusicActivity;
 import com.example.mediapipemultihandstrackingapp.R;
 import com.example.mediapipemultihandstrackingapp.model.RecordVideoModel;
 
+import java.io.File;
 import java.util.List;
 
 public class MyMusicListAdapter extends RecyclerView.Adapter<MyMusicListAdapter.ViewHolder> {
@@ -110,8 +114,10 @@ public class MyMusicListAdapter extends RecyclerView.Adapter<MyMusicListAdapter.
                     if (pos != RecyclerView.NO_POSITION) {
                         // 리스너 객체의 메서드 호출.
                         if (mListener != null) {
-                            mListener.onDeleteClick(v, pos) ;
-
+                            mListener.onDeleteClick(v, pos);
+                            mData.remove(getAdapterPosition());
+                            notifyItemRemoved(getAdapterPosition());
+                            notifyItemRangeChanged(getAdapterPosition(), mData.size());
                         }
                     }
                 }

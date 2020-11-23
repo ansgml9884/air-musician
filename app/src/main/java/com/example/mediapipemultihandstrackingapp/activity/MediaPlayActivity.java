@@ -20,7 +20,6 @@ public class MediaPlayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.media_player);
         Intent intent = getIntent() ;
-
         // No 값을 int 타입에서 String 타입으로 변환하여 표시.
         videoView = findViewById(R.id.videoView) ;
         String url = intent.getStringExtra("videoUrl") ;
