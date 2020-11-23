@@ -2,7 +2,6 @@ package com.example.mediapipemultihandstrackingapp;
 
 import android.os.Bundle;
 import android.view.WindowManager;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 public class HelpActivity extends AppCompatActivity {

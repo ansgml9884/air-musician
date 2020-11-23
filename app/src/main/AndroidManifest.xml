@@ -39,6 +39,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.MediaPlayActivity"
+            android:screenOrientation="landscape" />
         <activity android:name=".MainActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".MainMenuActivity"
@@ -54,5 +56,6 @@
         <activity android:name=".DeveloperActivity"
             android:screenOrientation="landscape"
             android:usesCleartextTraffic="true"/>
+
     </application>
 </manifest>

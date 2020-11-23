@@ -1,36 +1,38 @@
 package com.example.mediapipemultihandstrackingapp;
 
 import android.content.ContentUris;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.mediapipemultihandstrackingapp.activity.MediaPlayActivity;
 import com.example.mediapipemultihandstrackingapp.adapter.MyMusicListAdapter;
 import com.example.mediapipemultihandstrackingapp.model.RecordVideoModel;
 
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class MyMusicActivity extends AppCompatActivity {
     private Cursor videocursor;
     private RecyclerView recyclerView;
     private MyMusicListAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
+    private View view;
+    private VideoView videoView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +138,42 @@ public class MyMusicActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new MyMusicListAdapter(videoList);
         recyclerView.setAdapter(mAdapter);
+
+        mAdapter.setOnItemClickListener(new MyMusicListAdapter.OnItemClickListener() {
+            @Override
+            public void onPlayClick(View v, int pos) {
+                Log.d("aaaa", "버튼을 누른 아이템의 위치는 " + pos + " 의 플레이버튼");
+                Intent intent = new Intent(MyMusicActivity.this, MediaPlayActivity.class) ;
+                intent.putExtra("videoUrl", "/storage/emulated/0/AirMusician/"+videoList.get(pos).getName());
+                startActivity(intent);
+            }
+
+            @Override
+            public void onDeleteClick(View v, int pos) {
+                Log.d("aaaa", "버튼을 누른 아이템의 위치는 " + pos + " 의 삭제버튼");
+                String mediaPath = "/storage/emulated/0/AirMusician/"+videoList.get(pos).getName();
+                File file = new File(mediaPath);
+                if(file.exists()){
+                    if(videoList.size()!=0) {
+                        file.delete();
+                        videoList.remove(pos);
+                        Toast.makeText(MyMusicActivity.this, videoList.get(pos).getName()+" 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+
+                    }else{
+                        Toast.makeText(MyMusicActivity.this, "파일이 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    Toast.makeText(MyMusicActivity.this, "파일이 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onShareClick(View v, int pos) {
+                Log.d("aaaa", "버튼을 누른 아이템의 위치는 " + pos + " 의 공유버튼");
+            }
+        });
+
 
 
     }
