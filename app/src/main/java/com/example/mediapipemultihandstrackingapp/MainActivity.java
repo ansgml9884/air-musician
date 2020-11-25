@@ -9,6 +9,8 @@ import android.media.SoundPool;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Environment;
 import android.util.Log;
 import android.util.Size;
 import android.view.SurfaceHolder;
@@ -28,6 +30,12 @@ import com.google.mediapipe.components.PermissionHelper;
 import com.google.mediapipe.framework.AndroidAssetUtil;
 import com.google.mediapipe.framework.PacketGetter;
 import com.google.mediapipe.glutil.EglManager;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 /** Main activity of MediaPipe example apps. */
 public class MainActivity extends AppCompatActivity {
@@ -93,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                         eglManager.getNativeContext(),
                         BINARY_GRAPH_NAME,
                         INPUT_VIDEO_STREAM_NAME,
-                        INPUT_VIDEO_STREAM_NAME);
+                        OUTPUT_VIDEO_STREAM_NAME);
         processor.getVideoSurfaceOutput().setFlipY(FLIP_FRAMES_VERTICALLY);
         processor.addPacketCallback(
                 OUTPUT_LANDMARKS_STREAM_NAME,
@@ -174,36 +182,68 @@ public class MainActivity extends AppCompatActivity {
                 });
         cameraHelper.startCamera(this, CAMERA_FACING, /*surfaceTexture=*/ null);
     }
+    public static void WriteCsv(String str) {
+        String root = Environment.getExternalStorageDirectory().getAbsolutePath(); //내장에 만든다
+        String directoryName = "AirMusician"; // 저장 경로 폴더 생성 - 메인 저장소 최상위 디렉토리
+        final File myDir = new File(root + "/" + directoryName + "/dataSet");
+        if (!myDir.exists()) { // 폴더 없을 경우
+            myDir.mkdir(); // 폴더 생성
+        }
+        try {
+            BufferedWriter buf =
+                    new BufferedWriter(new FileWriter(myDir + "/test.txt", true)); // 데이터 파일 이름 ex)A_chord.csv
+            buf.append(str); // 파일 쓰기
+            buf.write(", 0\n"); //코드 분류값
+            buf.newLine(); // 개행
+            buf.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private String getMultiHandLandmarksDebugString(List<NormalizedLandmarkList> multiHandLandmarks) {
         if (multiHandLandmarks.isEmpty()) {
             return "No hand landmarks";
         }
         String multiHandLandmarksStr = "Number of hands detected: " + multiHandLandmarks.size() + "\n";
+        String outputDateStr = "";
         int handIndex = 0;
         for (NormalizedLandmarkList landmarks : multiHandLandmarks) {
             multiHandLandmarksStr +=
                     "\t#Hand landmarks for hand[" + handIndex + "]: " + landmarks.getLandmarkCount() + "\n";
             int landmarkIndex = 0;
             for (NormalizedLandmark landmark : landmarks.getLandmarkList()) {
+                if (landmarkIndex != 0) {
+                    outputDateStr += ",";
+                }
+                String xyzStr = landmark.getX()
+                        + ", "
+                        + landmark.getY()
+                        + ", "
+                        + landmark.getZ();
+                outputDateStr += xyzStr;
                 multiHandLandmarksStr +=
                         "\t\tLandmark ["
                                 + landmarkIndex
                                 + "]: ("
-                                + landmark.getX()
-                                + ", "
-                                + landmark.getY()
-                                + ", "
-                                + landmark.getZ()
+                                + xyzStr
                                 + ")\n";
                 ++landmarkIndex;
 
-                ///////////////////////////////////////
-                //x 자표가 0.5 이상일때 소리나기
-                if(landmark.getX() > 0.5) {
-                    SoundManager.play(SoundManager.DING_DONG);
-                }
-                //////////////////////////////////////
             }
+            WriteCsv(outputDateStr); //21개의 좌표 전달
+
+            ///////////////////////////////////////
+//               0번 좌표 x 값이 0.5 이상일때 소리나기 x가 가로(폰의 짧은 길이) z
+            if (landmarks.getLandmarkList().get(0).getX()> 0.5) {
+                SoundManager.play(SoundManager.DING_DONG);
+            }
+            //////////////////////////////////////
+
+//            float test = landmarks.getLandmarkList().get(0).getX();
+            Log.d(TAG,"11111111111111111111111"+outputDateStr); //데이터 확인
             ++handIndex;
         }
         return multiHandLandmarksStr;
