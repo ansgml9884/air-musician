@@ -3,6 +3,7 @@ package com.example.mediapipemultihandstrackingapp;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.SurfaceTexture;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
@@ -16,7 +17,10 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
+
 import com.example.mediapipemultihandstrackingapp.util.SoundManager;
 import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmark;
 import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmarkList;
@@ -31,6 +35,11 @@ import com.google.mediapipe.glutil.EglManager;
 import java.util.List;
 /** Main activity of MediaPipe example apps. */
 public class MainActivity extends AppCompatActivity {
+    private SoundPool soundPool;
+    private int[] chordSound = new int[3];
+    private Button[] chordButton = new Button[3];
+
+
     private static final String TAG = "MainActivity";
     private static final String BINARY_GRAPH_NAME = "multi_hand_tracking_mobile_gpu.binarypb";
     private static final String INPUT_VIDEO_STREAM_NAME = "input_video";
@@ -73,6 +82,26 @@ public class MainActivity extends AppCompatActivity {
         setupPreviewDisplayView();
         SoundManager.initSounds(getApplicationContext());
         ImageButton backImageBtn = (ImageButton)findViewById(R.id.back_img_btn);
+        chordButton[0] = findViewById(R.id.chord_c);
+        chordButton[1] = findViewById(R.id.chord_f);
+        chordButton[2] = findViewById(R.id.chord_dm);
+
+        for (Button buttonId : chordButton) {
+            buttonId.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View view) {
+                    Button result = findViewById(view.getId());
+                    Toast.makeText(MainActivity.this, "클릭 : " + result.getText().toString() , Toast.LENGTH_SHORT).show();
+                    if(buttonId.getText().equals("F")){
+                        soundPool.play(chordSound[1],1,1,1,0,1);
+                    }else if(buttonId.getText().equals("C")){
+                        soundPool.play(chordSound[0],1,1,1,0,1);
+                    }else {
+                        soundPool.play(chordSound[2], 1, 1, 1, 0, 1);
+                    }
+                }
+            });
+        }
+
         //뒤로가기 버튼
         backImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,6 +140,28 @@ public class MainActivity extends AppCompatActivity {
 
         PermissionHelper.checkAndRequestCameraPermissions(this);
     }
+
+    //SoundPool
+    @Override
+    protected void onStart() {
+        super.onStart();
+        AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_GAME)
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .build();
+
+        soundPool = new SoundPool.Builder()
+                .setAudioAttributes(audioAttributes)
+                .setMaxStreams(6)
+                .build();
+
+        chordSound[0] = soundPool.load(getApplicationContext(), R.raw.chord_c, 1);
+        chordSound[1] = soundPool.load(getApplicationContext(), R.raw.chord_f, 1);
+        chordSound[2] = soundPool.load(getApplicationContext(), R.raw.chord_dm, 1);
+
+
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -207,5 +258,11 @@ public class MainActivity extends AppCompatActivity {
             ++handIndex;
         }
         return multiHandLandmarksStr;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        soundPool.release();
     }
 }
