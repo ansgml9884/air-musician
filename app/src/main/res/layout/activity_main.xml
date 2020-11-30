@@ -4,41 +4,76 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <FrameLayout
         android:id="@+id/preview_display_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_weight="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints">
+
         <TextView
             android:id="@+id/no_camera_access_view"
-            android:layout_height="fill_parent"
             android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:gravity="center"
             android:text="@string/no_camera_access" />
+
+
+
     </FrameLayout>
+
+    <Button
+        android:id="@+id/chord_f"
+        android:text="F"
+        android:layout_width="50dp"
+        android:layout_height="100dp"
+        app:layout_constraintEnd_toStartOf="@+id/chord_c"
+        app:layout_constraintTop_toTopOf="@+id/preview_display_layout" />
+
+    <Button
+        android:id="@+id/chord_c"
+        android:text="C"
+        android:layout_width="50dp"
+        android:layout_height="100dp"
+        app:layout_constraintEnd_toStartOf="@+id/back_img_btn"
+        app:layout_constraintTop_toTopOf="@+id/preview_display_layout" />
+
+    <Button
+        android:id="@+id/chord_dm"
+        android:text="Dm"
+        android:layout_width="50dp"
+        android:layout_height="100dp"
+        app:layout_constraintEnd_toStartOf="@+id/chord_f"
+        app:layout_constraintTop_toTopOf="@+id/preview_display_layout" />
+
     <ImageView
+        android:id="@+id/imageView3"
         android:layout_width="35dp"
         android:layout_height="match_parent"
         android:background="@color/colorMain"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageButton
         android:id="@+id/back_img_btn"
         android:layout_width="35dp"
         android:layout_height="35dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/back"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="20dp"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageButton
         android:id="@+id/rec_img_btn"
         android:layout_width="33dp"
         android:layout_height="33dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         android:layout_marginBottom="20dp"
-        android:background="@drawable/rec"/>
+        android:background="@drawable/rec"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
