@@ -4,18 +4,16 @@ package com.example.mediapipemultihandstrackingapp.model;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
-import java.text.SimpleDateFormat;
-
-// My Video Model
-public class RecordVideoModel {
+// My Sound model
+public class RecordMediaModel {
     private final Uri uri;
     private final String name;
     private final String duration;
     private final int size;
     private final int date;
-    private  Bitmap thumbnail = null;
+    private Bitmap thumbnail = null;
 
-    public RecordVideoModel(Uri uri, String name, String duration, int size, int date, Bitmap thumbnail) {
+    public RecordMediaModel(Uri uri, String name, String duration, int size, int date, Bitmap thumbnail) {
         this.uri = uri;
         this.name = name;
         this.duration = duration;

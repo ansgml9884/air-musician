@@ -1,33 +1,25 @@
 package com.example.mediapipemultihandstrackingapp.adapter;
 
 import android.content.Context;
-import android.media.Image;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.VideoView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mediapipemultihandstrackingapp.MyMusicActivity;
 import com.example.mediapipemultihandstrackingapp.R;
-import com.example.mediapipemultihandstrackingapp.model.RecordVideoModel;
+import com.example.mediapipemultihandstrackingapp.model.RecordMediaModel;
 
-import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MyMusicListAdapter extends RecyclerView.Adapter<MyMusicListAdapter.ViewHolder> {
 
     private OnItemClickListener mListener = null ;
-    private List<RecordVideoModel> mData = null ;
+    private List<RecordMediaModel> mData = null ;
 
 
     public interface OnItemClickListener{
@@ -44,7 +36,7 @@ public class MyMusicListAdapter extends RecyclerView.Adapter<MyMusicListAdapter.
 
 
     // 생성자에서 데이터 리스트 객체를 전달받음.
-    public MyMusicListAdapter(List<RecordVideoModel> list) { mData = list ; }
+    public MyMusicListAdapter(List<RecordMediaModel> list) { mData = list ; }
     // onCreateViewHolder() - 아이템 뷰를 위한 뷰홀더 객체 생성하여 리턴.
     @Override
     public MyMusicListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -137,6 +129,11 @@ public class MyMusicListAdapter extends RecyclerView.Adapter<MyMusicListAdapter.
                 }
             });
         }
+    }
+
+    public void changeItem(ArrayList<RecordMediaModel> newData){
+        mData = newData;
+        notifyDataSetChanged();
     }
 
 }
