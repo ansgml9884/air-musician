@@ -1,17 +1,15 @@
 package com.example.mediapipemultihandstrackingapp;
 
-import android.content.ContentUris;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.media.MediaScannerConnection;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -21,19 +19,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mediapipemultihandstrackingapp.activity.MediaPlayActivity;
 import com.example.mediapipemultihandstrackingapp.adapter.MyMusicListAdapter;
-import com.example.mediapipemultihandstrackingapp.model.RecordVideoModel;
+import com.example.mediapipemultihandstrackingapp.model.RecordMediaModel;
+import com.example.mediapipemultihandstrackingapp.util.MediaStoreUtil;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MyMusicActivity extends AppCompatActivity {
-    private Cursor videocursor;
     private RecyclerView recyclerView;
     private MyMusicListAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private View view;
     private VideoView videoView;
+    private ArrayList<RecordMediaModel> videoList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,91 +42,34 @@ public class MyMusicActivity extends AppCompatActivity {
         setContentView(R.layout.activity_mymusic);
 
         //데이터를 recyclerView에 넘겨줄 List
-        List<RecordVideoModel> videoList = new ArrayList<RecordVideoModel>();
+        MediaStoreUtil myMediaStore =  MediaStoreUtil.getInstance(getApplicationContext());
+        videoList = myMediaStore.getAll(); // 비디오 전체 리스트 가져오기
 
-        //미디어 정보를 받아올 배열
-        String[] projection = new String[] {
-                MediaStore.Video.Media._ID, // primary Key
-                MediaStore.Video.Media.DISPLAY_NAME, // 파일읾
-                MediaStore.Video.Media.DURATION, // 영상길이
-                MediaStore.Video.Media.SIZE, // 영상크기
-                MediaStore.Video.Media.DATE_ADDED // 영상 추가 날짜 !!!추가 가공의 문제가 있음!!!
-        };
+        Spinner listSpinner  = findViewById(R.id.list_spinner);
+        ArrayAdapter monthAdapter = ArrayAdapter.createFromResource(this, R.array.mylist_sort, android.R.layout.simple_spinner_dropdown_item);
+        monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        listSpinner.setAdapter(monthAdapter);
+        listSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
 
-        String selection=MediaStore.Video.Media.DATA +" like?"; //전체 가져오기
-        String[] selectionArgs=new String[]{"%AirMusician%"}; //AirMusician 폴더내에
-        String sortOrder = MediaStore.Video.Media.DISPLAY_NAME + " ASC";
-
-        try (Cursor cursor = getApplicationContext().getContentResolver().query(
-                MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-                projection,
-                selection,
-                selectionArgs,
-                sortOrder
-        )) {
-
-            int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID);
-            int nameColumn =
-                    cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME);
-            int durationColumn =
-                    cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION);
-            int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE);
-            int createDate = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED);
-
-            while (cursor.moveToNext()) {
-
-                long id = cursor.getLong(idColumn);
-                String name = cursor.getString(nameColumn);
-                int duration = cursor.getInt(durationColumn)/1000;
-                int size = cursor.getInt(sizeColumn);
-                int date = cursor.getInt(createDate);
-
-                // 영상 길이 재가공
-                // 시 : 분 : 초 로 작업하기
-                int min = duration / 60;
-                int hour = min / 60;
-                duration= duration % 60;
-                min = min % 60;
-                String videoDuration = "";
-                if(hour > 0 && hour > 9) {
-                    videoDuration += String.valueOf(hour)+" : ";
-                }else if(hour > 0 && hour <= 9){
-                    videoDuration += "0"+String.valueOf(hour)+" : ";
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position == 0){
+                    videoList = myMediaStore.getAll();
+                    mAdapter.changeItem(videoList);
+                }else if (position == 1){
+                    videoList = myMediaStore.getVideos();
+                    mAdapter.changeItem(videoList);
                 }else{
-                    videoDuration += "00 : ";
+                    videoList = myMediaStore.getAudios();
+                    mAdapter.changeItem(videoList);
                 }
-                if(min > 0 && min > 9) {
-                    videoDuration += String.valueOf(min)+" : ";
-                }else if(min > 0 && min <= 9){
-                    videoDuration += "0"+String.valueOf(min)+" : ";
-                }else{
-                    videoDuration += "00 : ";
-                }
-                if(duration > 9){
-                    videoDuration += String.valueOf(duration);
-                }else{
-                    videoDuration += "0"+String.valueOf(duration);
-                }
-
-                Uri contentUri = ContentUris.withAppendedId(
-                        MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id);
-
-                // 영상 썸네일 작업
-                String videoPath = "/storage/emulated/0/AirMusician/" + name;
-                Bitmap thumbnail = null;
-
-                try {
-                    // 썸네일 추출후 리사이즈해서 다시 비트맵 생성
-                    Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(videoPath, MediaStore.Video.Thumbnails.FULL_SCREEN_KIND);
-                    thumbnail = ThumbnailUtils.extractThumbnail(bitmap, 560, 480);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                videoList.add(new RecordVideoModel(contentUri, name, videoDuration, size, date, thumbnail));
             }
-        }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
 
         // 리싸이클러뷰 연결
