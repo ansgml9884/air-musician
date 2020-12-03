@@ -19,4 +19,9 @@
     <string name="title">AIR MUSICIAN</string>
     <string name="developer"><![CDATA[< DEVELOPER >]]></string>
 
+    <string name="stop">Stop</string>
+    <string name="description_info">Info</string>
+    <string name="permission_request">This sample needs permission for camera and audio recording.</string>
+    <string name="camera_error">This device doesn\'t support Camera2 API.</string>
+    <string name="intro_message">Test</string>
 </resources>

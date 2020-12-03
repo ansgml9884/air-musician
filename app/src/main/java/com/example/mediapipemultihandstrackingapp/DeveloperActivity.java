@@ -20,13 +20,6 @@ public class DeveloperActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_developer);
 
-//        //꽃가루 효과
-//        LottieAnimationView animationView = (LottieAnimationView) findViewById(R.id.celebration_animation_view);
-//        animationView.setAnimation("celebration.json");
-//        animationView.loop(true);
-//        animationView.playAnimation();
-
-
         //배경 애니메이션
         LottieAnimationView backAnimationView = (LottieAnimationView) findViewById(R.id.dev_background);
         backAnimationView.setAnimation("background1.json");

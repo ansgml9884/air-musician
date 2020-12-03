@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 
-public class RecordAtivity extends AppCompatActivity {
+public class RecordActivity extends AppCompatActivity {
 //    private static final int MEDIA_RECORDER_REQUEST = 0;
 //
 //    private Camera mCamera;
