@@ -49,7 +49,15 @@
             android:screenOrientation="landscape"/>
         <activity android:name=".MyMusicActivity"
             android:screenOrientation="landscape"/>
-        <activity android:name=".HelpActivity"
+        <activity android:name=".help.HelpActivity"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".help.HelpActivity2"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".help.HelpActivity3"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".help.HelpActivity4"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".help.HelpActivity5"
             android:screenOrientation="landscape"/>
         <activity android:name=".RecordAtivity"
             android:screenOrientation="landscape"/>

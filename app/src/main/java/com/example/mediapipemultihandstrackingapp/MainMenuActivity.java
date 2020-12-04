@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.example.mediapipemultihandstrackingapp.help.HelpActivity;
 import com.scwang.wave.MultiWaveHeader;
 
 import java.io.File;
