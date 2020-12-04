@@ -1,5 +1,6 @@
 package com.example.mediapipemultihandstrackingapp;
 
+import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -30,6 +32,18 @@ public class SettingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_setting);
+
+        ImageButton homeBtn = (ImageButton)findViewById(R.id.home_img_btn);
+        homeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(
+                        getApplicationContext(),
+                        MainMenuActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            }
+        });
         //하단 바(소프트키) 없애기
         decorView = getWindow().getDecorView();
         uiOption = getWindow().getDecorView().getSystemUiVisibility();

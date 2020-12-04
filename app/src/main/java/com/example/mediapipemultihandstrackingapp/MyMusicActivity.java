@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -43,6 +44,8 @@ public class MyMusicActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_mymusic);
+
+
         //하단 바(소프트키) 없애기
         decorView = getWindow().getDecorView();
         uiOption = getWindow().getDecorView().getSystemUiVisibility();
@@ -65,6 +68,7 @@ public class MyMusicActivity extends AppCompatActivity {
         monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         listSpinner.setAdapter(monthAdapter);
         listSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

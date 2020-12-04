@@ -8,26 +8,13 @@
   <component name="ChangeListManager">
     <list default="true" id="927c6635-e3f1-4fe6-a5c2-905cd0fb17cf" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/DeveloperActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/DeveloperActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/MainActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/MainMenuActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/MainMenuActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/MyMusicActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/MyMusicActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/RecordAtivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/RecordAtivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/SettingActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/SettingActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/SplashActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/SplashActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/help/HelpActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/help/HelpActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/help/HelpActivity2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/help/HelpActivity2.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/help/HelpActivity3.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/help/HelpActivity3.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/help/HelpActivity4.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/help/HelpActivity4.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/help/HelpActivity5.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/help/HelpActivity5.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/layout/activity_developer.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/activity_developer.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/layout/activity_help.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/activity_help.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/layout/activity_help2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/activity_help2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/layout/activity_help3.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/activity_help3.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/layout/activity_help4.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/activity_help4.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/layout/activity_help5.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/activity_help5.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/layout/activity_mymusic.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/activity_mymusic.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/res/layout/activity_setting.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/activity_setting.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/layout/mymusic_list_item.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/mymusic_list_item.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/values/colors.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/values/styles.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/values/styles.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,6 +38,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
+        <option value="resourceFile" />
       </list>
     </option>
   </component>
@@ -169,14 +157,18 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
+    <state x="349" y="167" key="AndroidCreateResourceFileDialog" timestamp="1607069216482">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="349" y="167" key="AndroidCreateResourceFileDialog/0.0.1536.824@0.0.1536.824" timestamp="1607069216482" />
     <state x="549" y="153" key="FileChooserDialogImpl" timestamp="1607061248865">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="549" y="153" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1607061248865" />
-    <state x="569" y="190" key="chooseDestDirectoryDialog" timestamp="1607065454103">
+    <state x="569" y="190" key="chooseDestDirectoryDialog" timestamp="1607070090287">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="569" y="190" key="chooseDestDirectoryDialog/0.0.1536.824@0.0.1536.824" timestamp="1607065454103" />
+    <state x="569" y="190" key="chooseDestDirectoryDialog/0.0.1536.824@0.0.1536.824" timestamp="1607070090287" />
     <state x="469" y="374" key="com.intellij.ide.util.TipDialog" timestamp="1607061091635">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
