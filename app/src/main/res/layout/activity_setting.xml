@@ -1,55 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/gradient_backgrond">
 
+    <ImageView
+        android:id="@+id/up_tv"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:background="@color/transColorMainBtn"
+
+        />
+
+    <ImageButton
+        android:id="@+id/home_img_btn"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:background="@drawable/home_btn_customise"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="2dp"
+        />
     <TextView
         android:id="@+id/settingTitle"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/up_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/action_settings"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
         android:textSize="40dp"
         style="@style/title"/>
 
     <me.itangqi.waveloadingview.WaveLoadingView
         android:id="@+id/waveLoadingView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="330dp"
+        android:layout_height="310dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintTop_toBottomOf="@id/up_tv"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
 
         app:wlv_borderColor="@android:color/holo_blue_dark"
         app:wlv_borderWidth="3dp"
-        app:wlv_shapeType="circle"
         app:wlv_round_rectangle="true"
+        app:wlv_shapeType="circle"
+        app:wlv_titleBottomColor="@color/pink1"
+
+        app:wlv_titleBottomSize="24sp"
+        app:wlv_titleBottomStrokeColor="@color/colorWhite"
+        app:wlv_titleBottomStrokeWidth="3dp"
+        app:wlv_titleCenterColor="@color/pink2"
+
+        app:wlv_titleCenterSize="24sp"
+        app:wlv_titleCenterStrokeColor="@color/colorWhite"
+        app:wlv_titleCenterStrokeWidth="3dp"
+        app:wlv_titleTopColor="@color/pink3"
+
+        app:wlv_titleTopSize="24sp"
+        app:wlv_titleTopStrokeColor="@color/colorWhite"
+        app:wlv_titleTopStrokeWidth="3dp"
         app:wlv_triangle_direction="north"
 
-        app:wlv_titleCenterColor="@color/pink2"
-        app:wlv_titleCenterStrokeWidth="3dp"
-        app:wlv_titleCenterStrokeColor="@color/colorWhite"
-        app:wlv_titleCenterSize="24sp"
-
-        app:wlv_titleTopColor="@color/pink3"
-        app:wlv_titleTopStrokeWidth="3dp"
-        app:wlv_titleTopStrokeColor="@color/colorWhite"
-        app:wlv_titleTopSize="24sp"
-
-        app:wlv_titleBottomColor="@color/pink1"
-        app:wlv_titleBottomStrokeWidth="3dp"
-        app:wlv_titleBottomStrokeColor="@color/colorWhite"
-        app:wlv_titleBottomSize="24sp"
-
         app:wlv_waveAmplitude="70"
-        app:wlv_waveColor="@android:color/holo_blue_dark"
-/>
+        app:wlv_waveColor="@android:color/holo_blue_dark" />
 
     <com.example.mediapipemultihandstrackingapp.OutlineTextView
         android:id="@+id/instrumentsName"
@@ -57,7 +77,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="@id/settingTitle"
         app:layout_constraintTop_toBottomOf="@id/settingTitle"
-        android:layout_marginStart="200dp"
+        android:layout_marginStart="240dp"
         android:layout_marginTop="45dp"
         style="@style/whitetext"
         android:text="@string/Instrument"
@@ -108,7 +128,7 @@
         app:layout_constraintLeft_toRightOf="@id/recordName"
         app:layout_constraintTop_toTopOf="@id/recordName"
         android:text="sound"
-        android:textSize="20sp"
+        android:textSize="15sp"
         />
 
     <RadioButton
@@ -117,9 +137,9 @@
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toRightOf="@id/soundBtn"
         app:layout_constraintTop_toTopOf="@id/soundBtn"
-        android:layout_marginStart="30dp"
+        android:layout_marginStart="15dp"
         android:text="video"
-        android:textSize="20sp"
+        android:textSize="15sp"
         />
 
     </RadioGroup>
@@ -146,7 +166,7 @@
         app:layout_constraintLeft_toRightOf="@id/metronomeName"
         app:layout_constraintTop_toTopOf="@id/metronomeName"
         app:layout_constraintBottom_toTopOf="@id/sound"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="10dp"
         />
 
 

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -19,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.example.mediapipemultihandstrackingapp.help.HelpActivity;
 import com.scwang.wave.MultiWaveHeader;
 
 import java.io.File;
@@ -28,6 +30,10 @@ public class MainMenuActivity extends AppCompatActivity {
     MultiWaveHeader waveHeader, waveFooter;
     final int PERMISSIONS_REQUEST_CODE = 1;
     public static LottieAnimationView satrAnimationView;
+    //몰입모드
+    private View decorView;
+    private int	uiOption;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +45,17 @@ public class MainMenuActivity extends AppCompatActivity {
         animationView.setAnimation("music.json");
         animationView.loop(true);
         animationView.playAnimation();
+        //하단 바(소프트키) 없애기
+        decorView = getWindow().getDecorView();
+        uiOption = getWindow().getDecorView().getSystemUiVisibility();
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH )
+            uiOption |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN )
+            uiOption |= View.SYSTEM_UI_FLAG_FULLSCREEN;
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT )
+            uiOption |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+
+        decorView.setSystemUiVisibility( uiOption );
 
 
         //별 lottie

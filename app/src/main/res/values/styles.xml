@@ -91,7 +91,7 @@
     <style name="whitetext">
         <item name="android:textColor">@color/colorWhite</item>
         <item name="android:fontFamily">@font/maplebold</item>
-        <item name="android:textSize">20dp</item>
+        <item name="android:textSize">15dp</item>
     </style>
 
 

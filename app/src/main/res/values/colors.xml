@@ -20,4 +20,7 @@
     <color name="blue3">#9dd1f5</color>
     <color name="blue4">#364854</color>
     <color name="yellow1">#fafab9</color>
+    <color name="colorBlueGrey">#5a6470</color>
+    <color name="transColorMainBtn">#803a89bd</color>
+    <color name="colorWitheGrey">#cfd0d4</color>
 </resources>

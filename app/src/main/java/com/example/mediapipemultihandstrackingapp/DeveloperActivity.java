@@ -1,9 +1,13 @@
 package com.example.mediapipemultihandstrackingapp;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
@@ -13,18 +17,44 @@ import com.airbnb.lottie.LottieAnimationView;
 
 public class DeveloperActivity extends AppCompatActivity {
     VideoView videoView;
-
+    private View decorView;
+    private int	uiOption;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_developer);
+        //하단 바(소프트키) 없애기
+        decorView = getWindow().getDecorView();
+        uiOption = getWindow().getDecorView().getSystemUiVisibility();
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH )
+            uiOption |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN )
+            uiOption |= View.SYSTEM_UI_FLAG_FULLSCREEN;
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT )
+            uiOption |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+
+        decorView.setSystemUiVisibility( uiOption );
+
 
         //배경 애니메이션
         LottieAnimationView backAnimationView = (LottieAnimationView) findViewById(R.id.dev_background);
         backAnimationView.setAnimation("background1.json");
         backAnimationView.loop(true);
         backAnimationView.playAnimation();
+
+
+        ImageButton backImageBtn = (ImageButton)findViewById(R.id.back_img_btn);
+        backImageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(
+                        getApplicationContext(),
+                        MainMenuActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            }
+        });
 
 
         //비디오 뷰
