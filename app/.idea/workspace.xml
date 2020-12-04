@@ -8,10 +8,26 @@
   <component name="ChangeListManager">
     <list default="true" id="927c6635-e3f1-4fe6-a5c2-905cd0fb17cf" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/HelpActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/help/HelpActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/DeveloperActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/DeveloperActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/MainActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/MainMenuActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/MainMenuActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/MyMusicActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/MyMusicActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/RecordAtivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/RecordAtivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/SettingActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/SettingActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/SplashActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/SplashActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/help/HelpActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/help/HelpActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/help/HelpActivity2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/help/HelpActivity2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/help/HelpActivity3.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/help/HelpActivity3.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/help/HelpActivity4.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/help/HelpActivity4.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/help/HelpActivity5.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/help/HelpActivity5.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/layout/activity_developer.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/activity_developer.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/res/layout/activity_help.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/activity_help.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/layout/activity_help2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/activity_help2.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/layout/activity_help3.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/activity_help3.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/layout/activity_help4.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/activity_help4.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/layout/activity_help5.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/activity_help5.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/layout/activity_setting.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/activity_setting.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/values/colors.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -175,7 +191,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/example/mediapipemultihandstrackingapp/MainActivity.java</url>
-          <line>105</line>
+          <line>120</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>

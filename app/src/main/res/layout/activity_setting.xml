@@ -5,6 +5,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/gradient_backgrond">
 
+    <ImageView
+        android:id="@+id/up_tv"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:background="@color/colorMainBtn"
+
+        />
+
+    <ImageButton
+        android:id="@+id/home_img_btn"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:background="@drawable/home_btn_customise"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="2dp"
+        />
     <TextView
         android:id="@+id/settingTitle"
         app:layout_constraintLeft_toLeftOf="parent"

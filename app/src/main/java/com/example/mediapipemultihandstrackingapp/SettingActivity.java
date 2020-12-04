@@ -1,6 +1,7 @@
 package com.example.mediapipemultihandstrackingapp;
 
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -17,7 +18,8 @@ import me.itangqi.waveloadingview.WaveLoadingView;
 public class SettingActivity extends AppCompatActivity {
 
     private SharedPreferences appData;
-
+    private View decorView;
+    private int	uiOption;
 
     private SeekBar seekbar;
     private WaveLoadingView waveLoadingView;
@@ -28,6 +30,18 @@ public class SettingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_setting);
+        //하단 바(소프트키) 없애기
+        decorView = getWindow().getDecorView();
+        uiOption = getWindow().getDecorView().getSystemUiVisibility();
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH )
+            uiOption |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN )
+            uiOption |= View.SYSTEM_UI_FLAG_FULLSCREEN;
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT )
+            uiOption |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+
+        decorView.setSystemUiVisibility( uiOption );
+
 
         appData = getSharedPreferences("appData", MODE_PRIVATE);
         //load();

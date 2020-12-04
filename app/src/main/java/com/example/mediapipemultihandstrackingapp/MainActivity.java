@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private int[] chordSound = new int[3];
     private Button[] chordButton = new Button[3];
 
+    private View decorView;
+    private int	uiOption;
 
     private static final String TAG = "MainActivity";
     private static final String BINARY_GRAPH_NAME = "multi_hand_tracking_mobile_gpu.binarypb";
@@ -101,6 +103,19 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+
+        //하단 바(소프트키) 없애기
+        decorView = getWindow().getDecorView();
+        uiOption = getWindow().getDecorView().getSystemUiVisibility();
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH )
+            uiOption |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN )
+            uiOption |= View.SYSTEM_UI_FLAG_FULLSCREEN;
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT )
+            uiOption |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+
+        decorView.setSystemUiVisibility( uiOption );
+
 
         //뒤로가기 버튼
         backImageBtn.setOnClickListener(new View.OnClickListener() {
