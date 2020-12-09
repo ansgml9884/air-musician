@@ -51,6 +51,14 @@
         app:layout_constraintEnd_toStartOf="@+id/chord_f"
         app:layout_constraintTop_toTopOf="@+id/preview_display_layout" />
 
+    <Button
+        android:id="@+id/chord_g"
+        android:text="G"
+        android:layout_width="50dp"
+        android:layout_height="100dp"
+        app:layout_constraintEnd_toStartOf="@+id/chord_dm"
+        app:layout_constraintTop_toTopOf="@+id/preview_display_layout" />
+
     <ImageView
         android:id="@+id/imageView3"
         android:layout_width="35dp"

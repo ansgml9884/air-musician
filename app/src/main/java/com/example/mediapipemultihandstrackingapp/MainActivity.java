@@ -1,5 +1,4 @@
 package com.example.mediapipemultihandstrackingapp;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.SurfaceTexture;
@@ -36,11 +35,9 @@ import java.util.List;
 /** Main activity of MediaPipe example apps. */
 public class MainActivity extends AppCompatActivity {
     private SoundPool soundPool;
-    private int[] chordSound = new int[3];
-    private Button[] chordButton = new Button[3];
+    private int[] chordSound = new int[4];
+    private Button[] chordButton = new Button[4];
 
-    private View decorView;
-    private int	uiOption;
 
     private static final String TAG = "MainActivity";
     private static final String BINARY_GRAPH_NAME = "multi_hand_tracking_mobile_gpu.binarypb";
@@ -87,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         chordButton[0] = findViewById(R.id.chord_c);
         chordButton[1] = findViewById(R.id.chord_f);
         chordButton[2] = findViewById(R.id.chord_dm);
+        chordButton[3] = findViewById(R.id.chord_g);
 
         for (Button buttonId : chordButton) {
             buttonId.setOnClickListener(new View.OnClickListener() {
@@ -97,25 +95,15 @@ public class MainActivity extends AppCompatActivity {
                         soundPool.play(chordSound[1],1,1,1,0,1);
                     }else if(buttonId.getText().equals("C")){
                         soundPool.play(chordSound[0],1,1,1,0,1);
-                    }else {
+                    }else if(buttonId.getText().equals("DM")){
                         soundPool.play(chordSound[2], 1, 1, 1, 0, 1);
+
+                }else{
+                        soundPool.play(chordSound[3], 1, 1, 1, 0, 1);
                     }
                 }
             });
         }
-
-        //하단 바(소프트키) 없애기
-        decorView = getWindow().getDecorView();
-        uiOption = getWindow().getDecorView().getSystemUiVisibility();
-        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH )
-            uiOption |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN )
-            uiOption |= View.SYSTEM_UI_FLAG_FULLSCREEN;
-        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT )
-            uiOption |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-
-        decorView.setSystemUiVisibility( uiOption );
-
 
         //뒤로가기 버튼
         backImageBtn.setOnClickListener(new View.OnClickListener() {
@@ -173,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
         chordSound[0] = soundPool.load(getApplicationContext(), R.raw.chord_c, 1);
         chordSound[1] = soundPool.load(getApplicationContext(), R.raw.chord_f, 1);
         chordSound[2] = soundPool.load(getApplicationContext(), R.raw.chord_dm, 1);
+        chordSound[3] = soundPool.load(getApplicationContext(), R.raw.chord_g, 1);
 
 
     }
