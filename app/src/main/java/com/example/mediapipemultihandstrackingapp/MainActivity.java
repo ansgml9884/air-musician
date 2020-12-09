@@ -1,15 +1,15 @@
 package com.example.mediapipemultihandstrackingapp;
 
-import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.SurfaceTexture;
+import android.hardware.Camera;
 import android.media.AudioAttributes;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
+import android.media.CamcorderProfile;
+import android.media.MediaRecorder;
 import android.media.SoundPool;
-import android.os.Build;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Size;
 import android.view.SurfaceHolder;
@@ -21,26 +21,39 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.mediapipemultihandstrackingapp.util.SoundManager;
-import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmark;
-import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmarkList;
 import com.google.mediapipe.components.CameraHelper;
 import com.google.mediapipe.components.CameraXPreviewHelper;
 import com.google.mediapipe.components.ExternalTextureConverter;
 import com.google.mediapipe.components.FrameProcessor;
 import com.google.mediapipe.components.PermissionHelper;
+import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmark;
+import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmarkList;
 import com.google.mediapipe.framework.AndroidAssetUtil;
 import com.google.mediapipe.framework.PacketGetter;
 import com.google.mediapipe.glutil.EglManager;
+
 import java.util.List;
 /** Main activity of MediaPipe example apps. */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  {
     private SoundPool soundPool;
     private int[] chordSound = new int[3];
     private Button[] chordButton = new Button[3];
 
     private View decorView;
     private int	uiOption;
+
+    public static final int REQUEST_CAMERA = 1;
+    private SurfaceView surfaceView;
+    private Camera camera;
+    private MediaRecorder mMediaRecorder;
+    private ImageButton btn_record;
+    private boolean recording = false;
+    private SurfaceHolder surfaceHolder;
+    private String fileFath = "/storage/emulated/0/AirMusician/Test.mp4";
+
 
     private static final String TAG = "MainActivity";
     private static final String BINARY_GRAPH_NAME = "multi_hand_tracking_mobile_gpu.binarypb";
@@ -75,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
     private ExternalTextureConverter converter;
     // Handles camera access via the {@link CameraX} Jetpack support library.
     private CameraXPreviewHelper cameraHelper;
+    private Size displaySize;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +101,13 @@ public class MainActivity extends AppCompatActivity {
         chordButton[0] = findViewById(R.id.chord_c);
         chordButton[1] = findViewById(R.id.chord_f);
         chordButton[2] = findViewById(R.id.chord_dm);
+        btn_record = findViewById(R.id.rec_img_btn);
+        btn_record.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                trigger(v);
+            }
+        });
 
         for (Button buttonId : chordButton) {
             buttonId.setOnClickListener(new View.OnClickListener() {
@@ -154,6 +175,8 @@ public class MainActivity extends AppCompatActivity {
                 });
 
         PermissionHelper.checkAndRequestCameraPermissions(this);
+        PermissionHelper.checkAndRequestAudioPermissions(this);
+
     }
 
     //SoundPool
@@ -185,6 +208,7 @@ public class MainActivity extends AppCompatActivity {
         converter.setConsumer(processor);
         if (PermissionHelper.cameraPermissionsGranted(this)) {
             startCamera();
+
         }
     }
     @Override
@@ -197,26 +221,31 @@ public class MainActivity extends AppCompatActivity {
             int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         PermissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+
+
     }
     private void setupPreviewDisplayView() {
+
         previewDisplayView.setVisibility(View.GONE);
         ViewGroup viewGroup = findViewById(R.id.preview_display_layout);
         viewGroup.addView(previewDisplayView);
-        previewDisplayView
-                .getHolder()
-                .addCallback(
+        surfaceHolder = previewDisplayView.getHolder();
+        previewDisplayView.getHolder().addCallback(
                         new SurfaceHolder.Callback() {
                             @Override
                             public void surfaceCreated(SurfaceHolder holder) {
+
                                 processor.getVideoSurfaceOutput().setSurface(holder.getSurface());
                             }
                             @Override
                             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
                                 // (Re-)Compute the ideal size of the camera-preview display (the area that the
                                 // camera-preview frames get rendered onto, potentially with scaling and rotation)
                                 // based on the size of the SurfaceView that contains the display.
                                 Size viewSize = new Size(width, height);
-                                Size displaySize = cameraHelper.computeDisplaySizeFromViewSize(viewSize);
+                                displaySize = cameraHelper.computeDisplaySizeFromViewSize(viewSize);
                                 // Connect the converter to the camera-preview frames as its input (via
                                 // previewFrameTexture), and configure the output width and height as the computed
                                 // display size.
@@ -229,13 +258,65 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
     }
+
+
     private void startCamera() {
         cameraHelper = new CameraXPreviewHelper();
         cameraHelper.setOnCameraStartedListener(
                 surfaceTexture -> {
                     previewFrameTexture = surfaceTexture;
-                    // Make the display view visible to start showing the preview. This triggers the
-                    // SurfaceHolder.Callback added to (the holder of) previewDisplayView.
+
+                    mMediaRecorder = new MediaRecorder();
+                    mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                    mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
+
+                    CamcorderProfile profile = CamcorderProfile.get(Camera.CameraInfo.CAMERA_FACING_FRONT,CamcorderProfile.QUALITY_HIGH);
+                    profile.fileFormat = MediaRecorder.OutputFormat.MPEG_4;
+                    profile.videoCodec = MediaRecorder.VideoEncoder.MPEG_4_SP;
+                    profile.videoFrameHeight = 240;
+                    profile.videoFrameWidth = 320;
+                    profile.videoBitRate = 15;
+
+                    // Apply to MediaRecorder
+                    mMediaRecorder.setProfile(profile);
+                    mMediaRecorder.setOutputFile(fileFath);
+
+                    //mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+                    //DisplayMetrics displayMetrics = Resources.getSystem().getDisplayMetrics();
+                    //mMediaRecorder.setVideoSize(displayMetrics.widthPixels, displayMetrics.heightPixels);
+                    //mMediaRecorder.setVideoEncodingBitRate(1000000);
+                    //mMediaRecorder.setVideoFrameRate(30);
+
+
+//                            mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
+//                            mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+//                            mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+//                            mMediaRecorder.setOutputFile(fileFath);
+//                            mMediaRecorder.setVideoEncodingBitRate(1000000);
+//                            mMediaRecorder.setVideoFrameRate(30);
+//
+//                            DisplayMetrics displayMetrics = Resources.getSystem().getDisplayMetrics();
+//                            mMediaRecorder.setVideoSize(displayMetrics.widthPixels, displayMetrics.heightPixels);
+//\]]
+//                            //mMediaRecorder.setVideoSize(videoSize.getWidth(), videoSize.getHeight());
+//                            mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
+//                            mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+//
+//                            //mMediaRecorder.setVideoSize(displaySize.getWidth(), displaySize.getHeight());
+//                            //mMediaRecorder.setVideoFrameRate(30);
+
+                    try {
+                        Toast.makeText(MainActivity.this, "준비중."+ recording, Toast.LENGTH_SHORT).show();
+                        mMediaRecorder.prepare();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+
+                    }
+                    Toast.makeText(MainActivity.this, "완료."+ recording, Toast.LENGTH_SHORT).show();
+
+
+
                     previewDisplayView.setVisibility(View.VISIBLE);
                 });
         cameraHelper.startCamera(this, CAMERA_FACING, /*surfaceTexture=*/ null);
@@ -265,9 +346,7 @@ public class MainActivity extends AppCompatActivity {
 
                 ///////////////////////////////////////
                 //x 자표가 0.5 이상일때 소리나기
-                if(landmark.getX() > 0.5) {
-                    SoundManager.play(SoundManager.DING_DONG);
-                }
+
                 //////////////////////////////////////
             }
             ++handIndex;
@@ -280,4 +359,57 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         soundPool.release();
     }
+
+    private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int w, int h) {
+        final double ASPECT_TOLERANCE = 0.2;
+        double targetRatio = (double) w / h;
+        if (sizes == null) {}
+        Camera.Size optimalSize = null;
+        double minDiff = Double.MAX_VALUE;
+        int targetHeight = h;
+        // Try to find an size match aspect ratio and size
+        for (Camera.Size size : sizes) {
+            double ratio = (double) size.width / size.height;
+            if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE) continue;
+            if (Math.abs(size.height - targetHeight) < minDiff) {
+                optimalSize = size;
+                minDiff = Math.abs(size.height - targetHeight);
+            }
+        }
+        // Cannot find the one match the aspect ratio, ignore the requirement
+        if (optimalSize == null) {
+            minDiff = Double.MAX_VALUE;
+            for (Camera.Size size : sizes) {
+                if (Math.abs(size.height- targetHeight) < minDiff) {
+                    optimalSize = size;
+                    minDiff = Math.abs(size.height - targetHeight);
+                }
+            }
+        }
+        return optimalSize;
+    }
+
+    public void trigger(View v) {
+
+        if(recording){
+            mMediaRecorder.stop();
+            mMediaRecorder.reset();
+            mMediaRecorder.release();
+            recording = false;
+            Toast.makeText(MainActivity.this, "녹화가 종료되었습니다."+ recording, Toast.LENGTH_SHORT).show();
+        }else{
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mMediaRecorder.start();
+                    recording = true;
+                    Toast.makeText(MainActivity.this, "녹화가 시작되었습니다."+ recording, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+
+
+    }
+
 }
