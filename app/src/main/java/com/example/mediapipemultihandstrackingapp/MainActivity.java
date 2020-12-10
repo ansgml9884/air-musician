@@ -1,4 +1,5 @@
 package com.example.mediapipemultihandstrackingapp;
+
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.SurfaceTexture;
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity  {
     private SurfaceView surfaceView;
     private Camera camera;
     private MediaRecorder mMediaRecorder;
-    private ImageButton ImageButton;
+    private ImageButton btn_record;
     private boolean recording = false;
     private SurfaceHolder surfaceHolder;
     private String fileFath = "/storage/emulated/0/AirMusician/Test.mp4";
@@ -279,7 +280,7 @@ public class MainActivity extends AppCompatActivity  {
                     mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
                     mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
                     mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);
-                   // profile.videoBitRate = 15;
+                    // profile.videoBitRate = 15;
 
                     // Apply to MediaRecorder
                     //mMediaRecorder.setProfile(profile);

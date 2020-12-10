@@ -49,24 +49,13 @@
 
     <ImageView
         android:id="@+id/square1"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:background="@drawable/square"
+        android:layout_width="500dp"
+        android:layout_height="260dp"
+        android:background="@drawable/setting_image"
         app:layout_constraintLeft_toRightOf="@id/leftBtn"
-        app:layout_constraintTop_toBottomOf="@id/settingTitle"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="40dp"
-        />
-
-    <ImageView
-        android:id="@+id/square2"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:background="@drawable/square"
         app:layout_constraintRight_toLeftOf="@id/rightBtn"
-        app:layout_constraintTop_toBottomOf="@id/settingTitle"
-        android:layout_marginTop="30dp"
-        android:layout_marginRight="40dp"
+        app:layout_constraintTop_toBottomOf="@id/up_tv"
+        android:layout_marginTop="70dp"
         />
 
 
