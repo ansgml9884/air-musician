@@ -10,7 +10,6 @@ import android.widget.VideoView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.mediapipemultihandstrackingapp.R;
 
-
 public class MediaPlayActivity extends AppCompatActivity {
 
     private VideoView videoView;
