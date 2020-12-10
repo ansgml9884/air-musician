@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity  {
     private SurfaceHolder surfaceHolder;
     private String fileFath = "/storage/emulated/0/AirMusician/Test.mp4";
 
-
     private static final String TAG = "MainActivity";
     private static final String BINARY_GRAPH_NAME = "multi_hand_tracking_mobile_gpu.binarypb";
     private static final String INPUT_VIDEO_STREAM_NAME = "input_video";
@@ -208,6 +207,8 @@ public class MainActivity extends AppCompatActivity  {
         converter.setConsumer(processor);
         if (PermissionHelper.cameraPermissionsGranted(this)) {
             startCamera();
+            camera=Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT);
+
 
         }
     }
@@ -267,18 +268,21 @@ public class MainActivity extends AppCompatActivity  {
                     previewFrameTexture = surfaceTexture;
 
                     mMediaRecorder = new MediaRecorder();
-                    mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-                    mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
-
-                    CamcorderProfile profile = CamcorderProfile.get(Camera.CameraInfo.CAMERA_FACING_FRONT,CamcorderProfile.QUALITY_HIGH);
-                    profile.fileFormat = MediaRecorder.OutputFormat.MPEG_4;
-                    profile.videoCodec = MediaRecorder.VideoEncoder.MPEG_4_SP;
-                    profile.videoFrameHeight = 240;
-                    profile.videoFrameWidth = 320;
-                    profile.videoBitRate = 15;
+                    mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
+                    mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+                    //DisplayMetrics displayMetrics = Resources.getSystem().getDisplayMetrics();
+//                    CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_LOW);
+//                    profile.fileFormat = MediaRecorder.OutputFormat.MPEG_4;
+//                    profile.videoCodec = MediaRecorder.VideoEncoder.MPEG_4_SP;
+//                    profile.videoFrameHeight = cameraHelper.getFrameSize().getHeight();
+//                    profile.videoFrameWidth = cameraHelper.getFrameSize().getWidth();
+                    mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+                    mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+                    mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);
+                   // profile.videoBitRate = 15;
 
                     // Apply to MediaRecorder
-                    mMediaRecorder.setProfile(profile);
+                    //mMediaRecorder.setProfile(profile);
                     mMediaRecorder.setOutputFile(fileFath);
 
                     //mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
@@ -320,6 +324,7 @@ public class MainActivity extends AppCompatActivity  {
                     previewDisplayView.setVisibility(View.VISIBLE);
                 });
         cameraHelper.startCamera(this, CAMERA_FACING, /*surfaceTexture=*/ null);
+        ;
     }
     private String getMultiHandLandmarksDebugString(List<NormalizedLandmarkList> multiHandLandmarks) {
         if (multiHandLandmarks.isEmpty()) {
@@ -393,9 +398,8 @@ public class MainActivity extends AppCompatActivity  {
 
         if(recording){
             mMediaRecorder.stop();
-            mMediaRecorder.reset();
-            mMediaRecorder.release();
             recording = false;
+            camera.lock();
             Toast.makeText(MainActivity.this, "녹화가 종료되었습니다."+ recording, Toast.LENGTH_SHORT).show();
         }else{
             runOnUiThread(new Runnable() {
