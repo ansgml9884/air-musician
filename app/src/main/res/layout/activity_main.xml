@@ -5,6 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <SurfaceView
+        android:id="@+id/surfaceView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </SurfaceView>
     <FrameLayout
         android:id="@+id/preview_display_layout"
         android:layout_width="0dp"
