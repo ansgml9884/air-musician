@@ -1,17 +1,31 @@
 package com.example.mediapipemultihandstrackingapp;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCaptureSession;
+import android.hardware.camera2.CameraDevice;
+import android.hardware.camera2.CameraManager;
 import android.media.AudioAttributes;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.media.SoundPool;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
+import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Size;
+import android.util.SparseIntArray;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -21,6 +35,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mediapipemultihandstrackingapp.util.SoundManager;
@@ -35,25 +50,30 @@ import com.google.mediapipe.framework.AndroidAssetUtil;
 import com.google.mediapipe.framework.PacketGetter;
 import com.google.mediapipe.glutil.EglManager;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 /** Main activity of MediaPipe example apps. */
 public class MainActivity extends AppCompatActivity  {
     private SoundPool soundPool;
-    private int[] chordSound = new int[3];
-    private Button[] chordButton = new Button[3];
-
-    private View decorView;
+    private int[] chordSound = new int[6];
+    private Button[] chordButton = new Button[6];
+    boolean chk = false;
     private int	uiOption;
-
-    public static final int REQUEST_CAMERA = 1;
-    private SurfaceView surfaceView;
+    private View decorView;
     private Camera camera;
-    private MediaRecorder mMediaRecorder;
     private ImageButton btn_record;
+    private SurfaceView surfaceView;
     private boolean recording = false;
     private SurfaceHolder surfaceHolder;
-    private String fileFath = "/storage/emulated/0/AirMusician/Test.mp4";
+    private MediaRecorder mMediaRecorder;
+    public static final int REQUEST_CAMERA = 1;
+    private String fileFath = "/storage/emulated/0/AirMusician/";
 
+    private static Handler mCameraHandler;
     private static final String TAG = "MainActivity";
     private static final String BINARY_GRAPH_NAME = "multi_hand_tracking_mobile_gpu.binarypb";
     private static final String INPUT_VIDEO_STREAM_NAME = "input_video";
@@ -65,8 +85,6 @@ public class MainActivity extends AppCompatActivity  {
     // This is needed because OpenGL represents images assuming the image origin is at the bottom-left
     // corner, whereas MediaPipe in general assumes the image origin is at top-left.
     private static final boolean FLIP_FRAMES_VERTICALLY = true;
-
-
 
     static {
         // Load all native libraries needed by the app.
@@ -94,6 +112,9 @@ public class MainActivity extends AppCompatActivity  {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
         previewDisplayView = new SurfaceView(this);
+        HandlerThread handlerThread = new HandlerThread("Camera Handler Thread");
+        handlerThread.start();
+        mCameraHandler = new CameraHandler(handlerThread.getLooper());
         setupPreviewDisplayView();
         SoundManager.initSounds(getApplicationContext());
         ImageButton backImageBtn = (ImageButton)findViewById(R.id.back_img_btn);
@@ -103,26 +124,11 @@ public class MainActivity extends AppCompatActivity  {
         btn_record = findViewById(R.id.rec_img_btn);
         btn_record.setOnClickListener(new View.OnClickListener() {
             @Override
+
             public void onClick(View v) {
-                trigger(v);
+                trigger();
             }
         });
-
-        for (Button buttonId : chordButton) {
-            buttonId.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View view) {
-                    Button result = findViewById(view.getId());
-                    Toast.makeText(MainActivity.this, "클릭 : " + result.getText().toString() , Toast.LENGTH_SHORT).show();
-                    if(buttonId.getText().equals("F")){
-                        soundPool.play(chordSound[1],1,1,1,0,1);
-                    }else if(buttonId.getText().equals("C")){
-                        soundPool.play(chordSound[0],1,1,1,0,1);
-                    }else {
-                        soundPool.play(chordSound[2], 1, 1, 1, 0, 1);
-                    }
-                }
-            });
-        }
 
         //하단 바(소프트키) 없애기
         decorView = getWindow().getDecorView();
@@ -173,9 +179,13 @@ public class MainActivity extends AppCompatActivity  {
                                     + getMultiHandLandmarksDebugString(multiHandLandmarks));
                 });
 
-        PermissionHelper.checkAndRequestCameraPermissions(this);
-        PermissionHelper.checkAndRequestAudioPermissions(this);
 
+        Toast.makeText(MainActivity.this, "완료."+ recording, Toast.LENGTH_SHORT).show();
+        try {
+            setUpMediaRecorder();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     //SoundPool
@@ -195,22 +205,25 @@ public class MainActivity extends AppCompatActivity  {
         chordSound[0] = soundPool.load(getApplicationContext(), R.raw.chord_c, 1);
         chordSound[1] = soundPool.load(getApplicationContext(), R.raw.chord_f, 1);
         chordSound[2] = soundPool.load(getApplicationContext(), R.raw.chord_dm, 1);
+        chordSound[3] = soundPool.load(getApplicationContext(), R.raw.chord_a, 1);
+        chordSound[4] = soundPool.load(getApplicationContext(), R.raw.chord_d, 1);
+        chordSound[5] = soundPool.load(getApplicationContext(), R.raw.chord_em, 1);
 
+        converter = new ExternalTextureConverter(eglManager.getContext());
+        converter.setFlipY(FLIP_FRAMES_VERTICALLY);
+        converter.setConsumer(processor);
+
+        if (PermissionHelper.cameraPermissionsGranted(this)) {
+            startCamera();
+
+        }
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        converter = new ExternalTextureConverter(eglManager.getContext());
-        converter.setFlipY(FLIP_FRAMES_VERTICALLY);
-        converter.setConsumer(processor);
-        if (PermissionHelper.cameraPermissionsGranted(this)) {
-            startCamera();
-            camera=Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT);
 
-
-        }
     }
     @Override
     protected void onPause() {
@@ -222,8 +235,6 @@ public class MainActivity extends AppCompatActivity  {
             int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         PermissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-
 
     }
     private void setupPreviewDisplayView() {
@@ -266,65 +277,10 @@ public class MainActivity extends AppCompatActivity  {
         cameraHelper.setOnCameraStartedListener(
                 surfaceTexture -> {
                     previewFrameTexture = surfaceTexture;
-
-                    mMediaRecorder = new MediaRecorder();
-                    mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
-                    mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-                    //DisplayMetrics displayMetrics = Resources.getSystem().getDisplayMetrics();
-//                    CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_LOW);
-//                    profile.fileFormat = MediaRecorder.OutputFormat.MPEG_4;
-//                    profile.videoCodec = MediaRecorder.VideoEncoder.MPEG_4_SP;
-//                    profile.videoFrameHeight = cameraHelper.getFrameSize().getHeight();
-//                    profile.videoFrameWidth = cameraHelper.getFrameSize().getWidth();
-                    mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-                    mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-                    mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);
-                   // profile.videoBitRate = 15;
-
-                    // Apply to MediaRecorder
-                    //mMediaRecorder.setProfile(profile);
-                    mMediaRecorder.setOutputFile(fileFath);
-
-                    //mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-                    //DisplayMetrics displayMetrics = Resources.getSystem().getDisplayMetrics();
-                    //mMediaRecorder.setVideoSize(displayMetrics.widthPixels, displayMetrics.heightPixels);
-                    //mMediaRecorder.setVideoEncodingBitRate(1000000);
-                    //mMediaRecorder.setVideoFrameRate(30);
-
-
-//                            mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
-//                            mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-//                            mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-//                            mMediaRecorder.setOutputFile(fileFath);
-//                            mMediaRecorder.setVideoEncodingBitRate(1000000);
-//                            mMediaRecorder.setVideoFrameRate(30);
-//
-//                            DisplayMetrics displayMetrics = Resources.getSystem().getDisplayMetrics();
-//                            mMediaRecorder.setVideoSize(displayMetrics.widthPixels, displayMetrics.heightPixels);
-//\]]
-//                            //mMediaRecorder.setVideoSize(videoSize.getWidth(), videoSize.getHeight());
-//                            mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
-//                            mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-//
-//                            //mMediaRecorder.setVideoSize(displaySize.getWidth(), displaySize.getHeight());
-//                            //mMediaRecorder.setVideoFrameRate(30);
-
-                    try {
-                        Toast.makeText(MainActivity.this, "준비중."+ recording, Toast.LENGTH_SHORT).show();
-                        mMediaRecorder.prepare();
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-
-                    }
-                    Toast.makeText(MainActivity.this, "완료."+ recording, Toast.LENGTH_SHORT).show();
-
-
-
                     previewDisplayView.setVisibility(View.VISIBLE);
                 });
         cameraHelper.startCamera(this, CAMERA_FACING, /*surfaceTexture=*/ null);
-        ;
+
     }
     private String getMultiHandLandmarksDebugString(List<NormalizedLandmarkList> multiHandLandmarks) {
         if (multiHandLandmarks.isEmpty()) {
@@ -349,6 +305,37 @@ public class MainActivity extends AppCompatActivity  {
                                 + ")\n";
                 ++landmarkIndex;
 
+                int hand_count = multiHandLandmarks.size();
+                int chord_number = 0;
+
+                //코드 판별
+                //soundPool.play(chordSound[1],1,1,1,0,1);
+                //스트로크 재생
+
+                if (multiHandLandmarks.get(hand_count-1).getLandmarkList().get(8).getX() < multiHandLandmarks.get(hand_count-1).getLandmarkList().get(12).getX()){
+                    Log.d(TAG,"EmEmEmEmEmEmEmEmEmEmEmEmEm");
+                    chord_number = 5;
+                    //soundPool.play(chordSound[5],1,1,1,0,1);
+                }else if (multiHandLandmarks.get(hand_count-1).getLandmarkList().get(12).getX() < multiHandLandmarks.get(hand_count-1).getLandmarkList().get(16).getX()){
+                    Log.d(TAG,"DDDDDDDDDDDDDDDDDDDDDDDDDD");
+                    chord_number = 4;
+                    //soundPool.play(chordSound[4],1,1,1,0,1);
+                }else{
+                    Log.d(TAG,"AAAAAAAAAAAAAAAAAAAAAAAAAA");
+                    chord_number = 3;
+                    //soundPool.play(chordSound[3],1,1,1,0,1);
+                }
+
+
+                if (multiHandLandmarks.size()==2) {
+                    Log.d(TAG, "AAAAAAAAA" + multiHandLandmarks.get(0).getLandmarkList().get(0).getY() + "AAAAAAAAAAAAAAAAA" + multiHandLandmarks.get(1).getLandmarkList().get(0).getY());
+                    if (multiHandLandmarks.get(0).getLandmarkList().get(8).getX() > 0.6){
+                        chk=true;
+                    }else if (multiHandLandmarks.get(0).getLandmarkList().get(8).getX() < 0.3 && chk==true){
+                        chk = false;
+                        Toast.makeText(MainActivity.this, ""+chk, Toast.LENGTH_SHORT).show();
+                    }
+                }
                 ///////////////////////////////////////
                 //x 자표가 0.5 이상일때 소리나기
 
@@ -365,55 +352,139 @@ public class MainActivity extends AppCompatActivity  {
         soundPool.release();
     }
 
-    private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int w, int h) {
-        final double ASPECT_TOLERANCE = 0.2;
-        double targetRatio = (double) w / h;
-        if (sizes == null) {}
-        Camera.Size optimalSize = null;
-        double minDiff = Double.MAX_VALUE;
-        int targetHeight = h;
-        // Try to find an size match aspect ratio and size
-        for (Camera.Size size : sizes) {
-            double ratio = (double) size.width / size.height;
-            if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE) continue;
-            if (Math.abs(size.height - targetHeight) < minDiff) {
-                optimalSize = size;
-                minDiff = Math.abs(size.height - targetHeight);
-            }
-        }
-        // Cannot find the one match the aspect ratio, ignore the requirement
-        if (optimalSize == null) {
-            minDiff = Double.MAX_VALUE;
-            for (Camera.Size size : sizes) {
-                if (Math.abs(size.height- targetHeight) < minDiff) {
-                    optimalSize = size;
-                    minDiff = Math.abs(size.height - targetHeight);
-                }
-            }
-        }
-        return optimalSize;
-    }
 
-    public void trigger(View v) {
+    public void trigger() {
 
         if(recording){
-            mMediaRecorder.stop();
+            mCameraHandler.sendEmptyMessage(STOP);
             recording = false;
-            camera.lock();
             Toast.makeText(MainActivity.this, "녹화가 종료되었습니다."+ recording, Toast.LENGTH_SHORT).show();
         }else{
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mMediaRecorder.start();
-                    recording = true;
-                    Toast.makeText(MainActivity.this, "녹화가 시작되었습니다."+ recording, Toast.LENGTH_SHORT).show();
-                }
-            });
+            mCameraHandler.sendEmptyMessage(START);
+            recording = true;
+            Toast.makeText(MainActivity.this, "녹화가 시작되었습니다."+ recording, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private static final int SENSOR_ORIENTATION_DEFAULT_DEGREES = 90;
+    private static final int SENSOR_ORIENTATION_INVERSE_DEGREES = 270;
+    private static final SparseIntArray DEFAULT_ORIENTATIONS = new SparseIntArray();
+    private static final SparseIntArray INVERSE_ORIENTATIONS = new SparseIntArray();
+    static {
+        DEFAULT_ORIENTATIONS.append(Surface.ROTATION_0, 90);
+        DEFAULT_ORIENTATIONS.append(Surface.ROTATION_90, 0);
+        DEFAULT_ORIENTATIONS.append(Surface.ROTATION_180, 270);
+        DEFAULT_ORIENTATIONS.append(Surface.ROTATION_270, 180);
+    }
+
+    static {
+        INVERSE_ORIENTATIONS.append(Surface.ROTATION_0, 270);
+        INVERSE_ORIENTATIONS.append(Surface.ROTATION_90, 180);
+        INVERSE_ORIENTATIONS.append(Surface.ROTATION_180, 90);
+        INVERSE_ORIENTATIONS.append(Surface.ROTATION_270, 0);
+    }
+
+
+    private void setUpMediaRecorder() throws IOException {
+        mMediaRecorder = new MediaRecorder();
+        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+        CamcorderProfile profile = CamcorderProfile.get(Camera.CameraInfo.CAMERA_FACING_FRONT,CamcorderProfile.QUALITY_HIGH);
+        profile.fileFormat = MediaRecorder.OutputFormat.MPEG_4;
+        profile.videoCodec = MediaRecorder.VideoEncoder.DEFAULT;
+        profile.audioCodec = MediaRecorder.AudioEncoder.DEFAULT;
+
+        // Apply to MediaRecorder
+        mMediaRecorder.setOrientationHint(90);
+        mMediaRecorder.setProfile(profile);
+        mMediaRecorder.setOutputFile(getVideoFile());
+//        mMediaRecorder.setVideoSize(mVideoSize.getWidth(), mVideoSize.getHeight());
+//        mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
+//        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+
+        try {
+            mMediaRecorder.prepare();
+        } catch (IOException e) {
+            Log.e("start", "prepare() failed");
+        }
+    }
+
+//    private void startRecordingVideo() {
+//
+//        try {
+//            closePreviewSession();
+//            setUpMediaRecorder();
+//            SurfaceTexture texture = binding.preview.getSurfaceTexture();
+//            assert texture != null;
+//            mCaptureRequestBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_RECORD);
+//
+//            List<Surface> surfaces = new ArrayList<>();
+//
+//            Surface previewSurface = new Surface(texture);
+//            surfaces.add(previewSurface);
+//            mCaptureRequestBuilder.addTarget(previewSurface);
+//
+//            Surface recordSurface = mMediaRecorder.getSurface();
+//            surfaces.add(recordSurface);
+//            mCaptureRequestBuilder.addTarget(recordSurface);
+//
+//            mCameraDevice.createCaptureSession(surfaces, new CameraCaptureSession.StateCallback() {
+//                @Override
+//                public void onConfigured(@NonNull CameraCaptureSession session) {
+//                    mCameraCaptureSession = session;
+//                    updatePreview();
+//                    getActivity().runOnUiThread(() -> {
+//                        binding.pictureBtn.setText(R.string.stop);
+//                        mIsRecordingVideo = true;
+//
+//                        mMediaRecorder.start();
+//                    });
+//                }
+//
+//                @Override
+//                public void onConfigureFailed(@NonNull CameraCaptureSession session) {
+//                    Activity activity = getActivity();
+//                    if (null != activity) {
+//                        Toast.makeText(activity, "Failed", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//            }, mBackgroundHandler);
+//            timer();
+//        } catch (CameraAccessException | IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+    private int START = 0;
+    private int STOP  = 1;
+    class CameraHandler extends Handler {
+        Looper looper;
+        CameraHandler(Looper looper){
+            this.looper = looper;
         }
 
-
-
+        @Override
+        public void  handleMessage(Message msg) {
+            super.handleMessage(msg);
+            try {
+                if(msg.equals(START)){
+                    mMediaRecorder.start();
+                }else if(msg.equals((STOP))){
+                    mMediaRecorder.stop();
+                    mMediaRecorder.release();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
+
+    private File getVideoFile() {
+        // Create a video file
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        File videoFile;
+        videoFile = new File(fileFath + "REC_" + timeStamp + ".mp4");
+        return videoFile;
+    }
+
 
 }
