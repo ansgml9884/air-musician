@@ -10,6 +10,8 @@ import android.media.SoundPool;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.HandlerThread;
 import android.util.Log;
 import android.util.Size;
 import android.view.SurfaceHolder;
@@ -87,6 +89,10 @@ public class MainActivity extends AppCompatActivity {
         chordButton[0] = findViewById(R.id.chord_c);
         chordButton[1] = findViewById(R.id.chord_f);
         chordButton[2] = findViewById(R.id.chord_dm);
+
+        HandlerThread handlerThread = new HandlerThread("Camera Handler Thread");
+        handlerThread.start();
+        mCameraHandler = new CameraHandler(handlerThread.getLooper())
 
         for (Button buttonId : chordButton) {
             buttonId.setOnClickListener(new View.OnClickListener() {
