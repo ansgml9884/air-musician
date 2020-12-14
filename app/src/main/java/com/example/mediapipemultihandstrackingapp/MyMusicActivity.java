@@ -56,7 +56,10 @@ public class MyMusicActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
         });
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9f7ca18c838b11e4e5c13b0f2dbd2bebc9749b0c
 
         //하단 바(소프트키) 없애기
         decorView = getWindow().getDecorView();
