@@ -1,27 +1,18 @@
 package com.example.mediapipemultihandstrackingapp;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
-import android.hardware.camera2.CameraAccessException;
-import android.hardware.camera2.CameraCaptureSession;
-import android.hardware.camera2.CameraDevice;
-import android.hardware.camera2.CameraManager;
 import android.media.AudioAttributes;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.media.SoundPool;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
@@ -35,9 +26,9 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.mediapipemultihandstrackingapp.help.PermissionSupport;
 import com.example.mediapipemultihandstrackingapp.util.SoundManager;
 import com.google.mediapipe.components.CameraHelper;
 import com.google.mediapipe.components.CameraXPreviewHelper;
@@ -50,10 +41,10 @@ import com.google.mediapipe.framework.AndroidAssetUtil;
 import com.google.mediapipe.framework.PacketGetter;
 import com.google.mediapipe.glutil.EglManager;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 /** Main activity of MediaPipe example apps. */
@@ -71,6 +62,9 @@ public class MainActivity extends AppCompatActivity  {
     private SurfaceHolder surfaceHolder;
     private MediaRecorder mMediaRecorder;
     public static final int REQUEST_CAMERA = 1;
+    private PermissionSupport permission;
+
+
     private String fileFath = "/storage/emulated/0/AirMusician/";
 
     private static Handler mCameraHandler;
@@ -109,12 +103,10 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        permissionCheck();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
         previewDisplayView = new SurfaceView(this);
-        HandlerThread handlerThread = new HandlerThread("Camera Handler Thread");
-        handlerThread.start();
-        mCameraHandler = new CameraHandler(handlerThread.getLooper());
         setupPreviewDisplayView();
         SoundManager.initSounds(getApplicationContext());
         ImageButton backImageBtn = (ImageButton)findViewById(R.id.back_img_btn);
@@ -165,6 +157,7 @@ public class MainActivity extends AppCompatActivity  {
                         INPUT_VIDEO_STREAM_NAME,
                         INPUT_VIDEO_STREAM_NAME);
         processor.getVideoSurfaceOutput().setFlipY(FLIP_FRAMES_VERTICALLY);
+
         processor.addPacketCallback(
                 OUTPUT_LANDMARKS_STREAM_NAME,
                 (packet) -> {
@@ -179,14 +172,29 @@ public class MainActivity extends AppCompatActivity  {
                                     + getMultiHandLandmarksDebugString(multiHandLandmarks));
                 });
 
-
-        Toast.makeText(MainActivity.this, "완료."+ recording, Toast.LENGTH_SHORT).show();
-        try {
-            setUpMediaRecorder();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        PermissionHelper.checkAndRequestCameraPermissions(this);
     }
+
+
+//    private void permissionCheck(){
+//
+//        // SDK 23버전 이하 버전에서는 Permission이 필요하지 않습니다.
+//        if(Build.VERSION.SDK_INT >= 23){
+//            // 방금 전 만들었던 클래스 객체 생성
+//            permission = new PermissionSupport(this, this);
+//            // 권한 체크한 후에 리턴이 false로 들어온다면
+//            if (!permission.checkPermission()){
+//                // 권한 요청을 해줍니다.
+//                permission.requestPermission();
+//            }
+//            startCamera();
+//            try {
+//                setUpMediaRecorder();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
     //SoundPool
     @Override
@@ -209,20 +217,26 @@ public class MainActivity extends AppCompatActivity  {
         chordSound[4] = soundPool.load(getApplicationContext(), R.raw.chord_d, 1);
         chordSound[5] = soundPool.load(getApplicationContext(), R.raw.chord_em, 1);
 
-        converter = new ExternalTextureConverter(eglManager.getContext());
-        converter.setFlipY(FLIP_FRAMES_VERTICALLY);
-        converter.setConsumer(processor);
 
-        if (PermissionHelper.cameraPermissionsGranted(this)) {
-            startCamera();
-
-        }
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        converter = new ExternalTextureConverter(eglManager.getContext());
+        converter.setFlipY(FLIP_FRAMES_VERTICALLY);
+        converter.setConsumer(processor);
+
+        if (PermissionHelper.cameraPermissionsGranted(this)) {
+            startCamera();
+            try {
+                setUpMediaRecorder();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
 
     }
     @Override
@@ -261,8 +275,7 @@ public class MainActivity extends AppCompatActivity  {
                                 // Connect the converter to the camera-preview frames as its input (via
                                 // previewFrameTexture), and configure the output width and height as the computed
                                 // display size.
-                                converter.setSurfaceTextureAndAttachToGLContext(
-                                        previewFrameTexture, displaySize.getWidth(), displaySize.getHeight());
+                                converter.setSurfaceTextureAndAttachToGLContext(previewFrameTexture, displaySize.getWidth(), displaySize.getHeight());
                             }
                             @Override
                             public void surfaceDestroyed(SurfaceHolder holder) {
@@ -273,6 +286,7 @@ public class MainActivity extends AppCompatActivity  {
 
 
     private void startCamera() {
+
         cameraHelper = new CameraXPreviewHelper();
         cameraHelper.setOnCameraStartedListener(
                 surfaceTexture -> {
@@ -280,6 +294,32 @@ public class MainActivity extends AppCompatActivity  {
                     previewDisplayView.setVisibility(View.VISIBLE);
                 });
         cameraHelper.startCamera(this, CAMERA_FACING, /*surfaceTexture=*/ null);
+
+        mMediaRecorder = new MediaRecorder();
+        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+//        mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.DEFAULT);
+        //mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
+//        CamcorderProfile profile = CamcorderProfile.get(Camera.CameraInfo.CAMERA_FACING_FRONT,CamcorderProfile.QUALITY_HIGH);
+//        profile.fileFormat = MediaRecorder.OutputFormat.MPEG_4;
+//        profile.videoCodec = MediaRecorder.VideoEncoder.DEFAULT;
+//        profile.audioCodec = MediaRecorder.AudioEncoder.DEFAULT;
+
+        // Apply to MediaRecorder
+//        mMediaRecorder.setOrientationHint(90);
+//        mMediaRecorder.setProfile(profile);
+        mMediaRecorder.setOutputFile(getVideoFile());
+//        mMediaRecorder.setVideoSize(mVideoSize.getWidth(), mVideoSize.getHeight());
+//        mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
+//        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+
+        try {
+            mMediaRecorder.prepare();
+        } catch (IOException e) {
+            Log.e("start", "prepare() failed");
+        }
+
 
     }
     private String getMultiHandLandmarksDebugString(List<NormalizedLandmarkList> multiHandLandmarks) {
@@ -356,11 +396,12 @@ public class MainActivity extends AppCompatActivity  {
     public void trigger() {
 
         if(recording){
-            mCameraHandler.sendEmptyMessage(STOP);
+            mMediaRecorder.stop();
+            mMediaRecorder.release();
             recording = false;
             Toast.makeText(MainActivity.this, "녹화가 종료되었습니다."+ recording, Toast.LENGTH_SHORT).show();
         }else{
-            mCameraHandler.sendEmptyMessage(START);
+            mMediaRecorder.start();
             recording = true;
             Toast.makeText(MainActivity.this, "녹화가 시작되었습니다."+ recording, Toast.LENGTH_SHORT).show();
         }
@@ -386,27 +427,7 @@ public class MainActivity extends AppCompatActivity  {
 
 
     private void setUpMediaRecorder() throws IOException {
-        mMediaRecorder = new MediaRecorder();
-        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-        CamcorderProfile profile = CamcorderProfile.get(Camera.CameraInfo.CAMERA_FACING_FRONT,CamcorderProfile.QUALITY_HIGH);
-        profile.fileFormat = MediaRecorder.OutputFormat.MPEG_4;
-        profile.videoCodec = MediaRecorder.VideoEncoder.DEFAULT;
-        profile.audioCodec = MediaRecorder.AudioEncoder.DEFAULT;
 
-        // Apply to MediaRecorder
-        mMediaRecorder.setOrientationHint(90);
-        mMediaRecorder.setProfile(profile);
-        mMediaRecorder.setOutputFile(getVideoFile());
-//        mMediaRecorder.setVideoSize(mVideoSize.getWidth(), mVideoSize.getHeight());
-//        mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
-//        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-
-        try {
-            mMediaRecorder.prepare();
-        } catch (IOException e) {
-            Log.e("start", "prepare() failed");
-        }
     }
 
 //    private void startRecordingVideo() {
@@ -454,37 +475,16 @@ public class MainActivity extends AppCompatActivity  {
 //            e.printStackTrace();
 //        }
 //    }
-    private int START = 0;
-    private int STOP  = 1;
-    class CameraHandler extends Handler {
-        Looper looper;
-        CameraHandler(Looper looper){
-            this.looper = looper;
-        }
-
-        @Override
-        public void  handleMessage(Message msg) {
-            super.handleMessage(msg);
-            try {
-                if(msg.equals(START)){
-                    mMediaRecorder.start();
-                }else if(msg.equals((STOP))){
-                    mMediaRecorder.stop();
-                    mMediaRecorder.release();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     private File getVideoFile() {
         // Create a video file
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         File videoFile;
-        videoFile = new File(fileFath + "REC_" + timeStamp + ".mp4");
+        videoFile = new File(fileFath + "REC_" + timeStamp + ".mp3");
         return videoFile;
     }
 
 
+
 }
+
