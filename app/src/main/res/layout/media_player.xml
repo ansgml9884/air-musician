@@ -14,6 +14,12 @@
         app:layout_constraintTop_toBottomOf="@+id/up_tv" />
 
 
+    <VideoView
+        android:id="@+id/videoView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/up_tv" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
