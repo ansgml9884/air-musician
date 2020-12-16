@@ -33,10 +33,18 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui:2.3.1'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'gun0912.ted:tedpermission:2.0.0'
+<<<<<<< HEAD
 
 
     implementation 'com.uncorkedstudios.android:recordable-surfaceview:1.5.7'
 
+=======
+<<<<<<< HEAD
+    implementation 'com.uncorkedstudios.android:recordable-surfaceview:1.5.7'
+
+=======
+>>>>>>> 9f7ca18c838b11e4e5c13b0f2dbd2bebc9749b0c
+>>>>>>> f7ca4ccb20dc71d9392c03d0a0ab4a5a8f53f5d2
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

@@ -276,7 +276,12 @@ public class MainActivity extends AppCompatActivity  {
                         // Connect the converter to the camera-preview frames as its input (via
                         // previewFrameTexture), and configure the output width and height as the computed
                         // display size.
+<<<<<<< HEAD
                         converter.setSurfaceTextureAndAttachToGLContext(previewFrameTexture, displaySize.getWidth(), displaySize.getHeight());
+=======
+                        converter.setSurfaceTextureAndAttachToGLContext(
+                                previewFrameTexture, displaySize.getWidth(), displaySize.getHeight());
+>>>>>>> f7ca4ccb20dc71d9392c03d0a0ab4a5a8f53f5d2
                     }
                     @Override
                     public void surfaceDestroyed(SurfaceHolder holder) {
@@ -292,6 +297,64 @@ public class MainActivity extends AppCompatActivity  {
         cameraHelper.setOnCameraStartedListener(
                 surfaceTexture -> {
                     previewFrameTexture = surfaceTexture;
+<<<<<<< HEAD
+=======
+
+                    mMediaRecorder = new MediaRecorder();
+                    mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
+                    mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+                    //DisplayMetrics displayMetrics = Resources.getSystem().getDisplayMetrics();
+//                    CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_LOW);
+//                    profile.fileFormat = MediaRecorder.OutputFormat.MPEG_4;
+//                    profile.videoCodec = MediaRecorder.VideoEncoder.MPEG_4_SP;
+//                    profile.videoFrameHeight = cameraHelper.getFrameSize().getHeight();
+//                    profile.videoFrameWidth = cameraHelper.getFrameSize().getWidth();
+                    mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+                    mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+                    mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);
+                    // profile.videoBitRate = 15;
+
+                    // Apply to MediaRecorder
+                    //mMediaRecorder.setProfile(profile);
+                    mMediaRecorder.setOutputFile(fileFath);
+
+                    //mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+                    //DisplayMetrics displayMetrics = Resources.getSystem().getDisplayMetrics();
+                    //mMediaRecorder.setVideoSize(displayMetrics.widthPixels, displayMetrics.heightPixels);
+                    //mMediaRecorder.setVideoEncodingBitRate(1000000);
+                    //mMediaRecorder.setVideoFrameRate(30);
+
+
+//                            mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
+//                            mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+//                            mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+//                            mMediaRecorder.setOutputFile(fileFath);
+//                            mMediaRecorder.setVideoEncodingBitRate(1000000);
+//                            mMediaRecorder.setVideoFrameRate(30);
+//
+//                            DisplayMetrics displayMetrics = Resources.getSystem().getDisplayMetrics();
+//                            mMediaRecorder.setVideoSize(displayMetrics.widthPixels, displayMetrics.heightPixels);
+//\]]
+//                            //mMediaRecorder.setVideoSize(videoSize.getWidth(), videoSize.getHeight());
+//                            mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
+//                            mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+//
+//                            //mMediaRecorder.setVideoSize(displaySize.getWidth(), displaySize.getHeight());
+//                            //mMediaRecorder.setVideoFrameRate(30);
+
+                    try {
+                        Toast.makeText(MainActivity.this, "준비중."+ recording, Toast.LENGTH_SHORT).show();
+                        mMediaRecorder.prepare();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+
+                    }
+                    Toast.makeText(MainActivity.this, "완료."+ recording, Toast.LENGTH_SHORT).show();
+
+
+
+>>>>>>> f7ca4ccb20dc71d9392c03d0a0ab4a5a8f53f5d2
                     previewDisplayView.setVisibility(View.VISIBLE);
                 });
         cameraHelper.startCamera(this, CAMERA_FACING, /*surfaceTexture=*/ null);
