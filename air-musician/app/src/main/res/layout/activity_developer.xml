@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/yellow1"
+  >
+
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/dev_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="background1.json"
+        app:lottie_loop="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+  />
+
+
+
+    <ImageButton
+        android:id="@+id/back_img_btn"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/back_btn_customise_dev_dev"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="20dp"
+        />
+
+
+
+    <TextView
+        android:id="@+id/developer_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/developer"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/title"
+        />
+
+
+
+    <VideoView
+
+        android:id="@+id/junsoo"
+        android:layout_width="300dp"
+        android:layout_height="150dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/developer_title"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="20dp"
+
+        />
+    <LinearLayout
+        android:id="@+id/developer_linear"
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/developer_title"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="50dp"
+        android:orientation="vertical"
+        >
+       <TextView
+           android:id="@+id/bbo"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_marginLeft="50dp"
+           android:text="BBO"
+                    style="@style/dev_text1"
+             />
+        <TextView
+            android:id="@+id/nana"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:text="NANA"
+            style="@style/dev_text2"
+            />
+        <TextView
+            android:id="@+id/winston"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="WINSTON"
+            android:layout_marginLeft="10dp"
+            style="@style/dev_text3"
+            />
+        <TextView
+            android:id="@+id/fullmoon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FULLMOON"
+            style="@style/dev_text4"
+            />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

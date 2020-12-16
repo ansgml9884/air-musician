@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-893252954/MediaPipeMultiHandsTrackingApp.iml" filepath="$PROJECT_DIR$/.idea/modules/-893252954/MediaPipeMultiHandsTrackingApp.iml" group="MediaPipeMultiHandsTrackingApp" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/MediaPipeMultiHandsTrackingApp-app.iml" filepath="$PROJECT_DIR$/.idea/modules/MediaPipeMultiHandsTrackingApp-app.iml" group="MediaPipeMultiHandsTrackingApp/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1597355800/air-musician-5b532d163c9b053b0292079e73d387be00d875dc-MediaPipeMultiHandsTrackingApp.iml" filepath="$PROJECT_DIR$/.idea/modules/1597355800/air-musician-5b532d163c9b053b0292079e73d387be00d875dc-MediaPipeMultiHandsTrackingApp.iml" group="MediaPipeMultiHandsTrackingApp" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app.iml" group="MediaPipeMultiHandsTrackingApp/app" />
+    </modules>
+  </component>
+</project>
