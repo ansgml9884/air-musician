@@ -5,12 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <SurfaceView
-        android:id="@+id/surfaceView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </SurfaceView>
     <FrameLayout
         android:id="@+id/preview_display_layout"
         android:layout_width="0dp"
@@ -33,29 +27,6 @@
 
     </FrameLayout>
 
-    <Button
-        android:id="@+id/chord_f"
-        android:text="F"
-        android:layout_width="50dp"
-        android:layout_height="100dp"
-        app:layout_constraintEnd_toStartOf="@+id/chord_c"
-        app:layout_constraintTop_toTopOf="@+id/preview_display_layout" />
-
-    <Button
-        android:id="@+id/chord_c"
-        android:text="C"
-        android:layout_width="50dp"
-        android:layout_height="100dp"
-        app:layout_constraintEnd_toStartOf="@+id/back_img_btn"
-        app:layout_constraintTop_toTopOf="@+id/preview_display_layout" />
-
-    <Button
-        android:id="@+id/chord_dm"
-        android:text="Dm"
-        android:layout_width="50dp"
-        android:layout_height="100dp"
-        app:layout_constraintEnd_toStartOf="@+id/chord_f"
-        app:layout_constraintTop_toTopOf="@+id/preview_display_layout" />
 
     <ImageView
         android:id="@+id/imageView3"

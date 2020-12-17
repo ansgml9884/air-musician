@@ -45,6 +45,17 @@ public class MyMusicActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_mymusic);
 
+        ImageButton homeBtn = (ImageButton)findViewById(R.id.home_img_btn);
+        homeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(
+                        getApplicationContext(),
+                        MainMenuActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            }
+        });
 
         //하단 바(소프트키) 없애기
         decorView = getWindow().getDecorView();

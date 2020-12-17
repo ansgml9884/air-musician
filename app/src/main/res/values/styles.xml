@@ -94,6 +94,12 @@
         <item name="android:textSize">15dp</item>
     </style>
 
+    <style name="setting_play">
+        <item name="android:textColor">@color/colorRed</item>
+        <item name="android:fontFamily">@font/maplebold</item>
+        <item name="android:textSize">25dp</item>
+    </style>
+
 
     <!--instruments스피너 종류-->
     <string-array name="instruments_menu">
