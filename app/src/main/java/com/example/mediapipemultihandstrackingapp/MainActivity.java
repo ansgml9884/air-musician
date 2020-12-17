@@ -1,18 +1,12 @@
 package com.example.mediapipemultihandstrackingapp;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.AssetFileDescriptor;
-import android.content.res.AssetManager;
 import android.graphics.SurfaceTexture;
 import android.media.AudioAttributes;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.media.SoundPool;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Environment;
 import android.util.Log;
 import android.util.Size;
@@ -22,26 +16,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.mediapipemultihandstrackingapp.util.HttpConnectionManager;
 import com.example.mediapipemultihandstrackingapp.util.SoundManager;
-import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmark;
-import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmarkList;
 import com.google.mediapipe.components.CameraHelper;
 import com.google.mediapipe.components.CameraXPreviewHelper;
 import com.google.mediapipe.components.ExternalTextureConverter;
 import com.google.mediapipe.components.FrameProcessor;
 import com.google.mediapipe.components.PermissionHelper;
+import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmark;
+import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmarkList;
 import com.google.mediapipe.framework.AndroidAssetUtil;
 import com.google.mediapipe.framework.PacketGetter;
 import com.google.mediapipe.glutil.EglManager;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /** Main activity of MediaPipe example apps. */
@@ -49,9 +48,26 @@ public class MainActivity extends AppCompatActivity {
     private SoundPool soundPool;
     private int[] chordSound = new int[6];
     boolean chk = false;
-
     private int	uiOption;
     private View decorView;
+    private ImageButton btn_record;
+    private boolean recording = false;
+    private SurfaceHolder surfaceHolder;
+    private MediaRecorder mMediaRecorder;
+    private TextView chord;
+    HttpConnectionManager h;
+
+    private String fileFath = "/storage/emulated/0/AirMusician/";
+
+    // Guiter Chords
+    private static final String CHORD_C = "1";
+    private static final String CHORD_Dm = "2";
+    private static final String CHORD_E = "3";
+    private static final String CHORD_F = "4";
+    private static final String CHORD_G7 = "5";
+    private static final String CHORD_A = "6";
+    private static final String CHORD_B = "7";
+
 
     private static final String TAG = "MainActivity";
     private static final String BINARY_GRAPH_NAME = "multi_hand_tracking_mobile_gpu.binarypb";
@@ -93,12 +109,25 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
+
         previewDisplayView = new SurfaceView(this);
+       // mCamera = getCameraInstance();
+        h = new HttpConnectionManager();
         setupPreviewDisplayView();
         SoundManager.initSounds(getApplicationContext());
-        ImageButton backImageBtn = (ImageButton) findViewById(R.id.back_img_btn);
+        ImageButton backImageBtn = (ImageButton)findViewById(R.id.back_img_btn);
+        chord = findViewById(R.id.chord_view);
+
+        btn_record = findViewById(R.id.rec_img_btn);
+        btn_record.setOnClickListener(new View.OnClickListener() {
+            @Override
+
+            public void onClick(View v) {
+                trigger();
+            }
+        });
 
         //하단 바(소프트키) 없애기
         decorView = getWindow().getDecorView();
@@ -111,7 +140,6 @@ public class MainActivity extends AppCompatActivity {
             uiOption |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 
         decorView.setSystemUiVisibility( uiOption );
-
         backImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -131,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
                         eglManager.getNativeContext(),
                         BINARY_GRAPH_NAME,
                         INPUT_VIDEO_STREAM_NAME,
-                        OUTPUT_VIDEO_STREAM_NAME);
+                        INPUT_VIDEO_STREAM_NAME);
         processor.getVideoSurfaceOutput().setFlipY(FLIP_FRAMES_VERTICALLY);
         processor.addPacketCallback(
                 OUTPUT_LANDMARKS_STREAM_NAME,
@@ -139,6 +167,17 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, "Received multi-hand landmarks packet.");
                     List<NormalizedLandmarkList> multiHandLandmarks =
                             PacketGetter.getProtoVector(packet, NormalizedLandmarkList.parser());
+
+                    if (multiHandLandmarks.size() >= 1) {
+                        if (multiHandLandmarks.get(0).getLandmarkList().get(9).getX() > 0.6){
+                            chk=true;
+                        }else if (multiHandLandmarks.get(0).getLandmarkList().get(9).getX() <= 0.4 && chk==true){
+                            chk = false;;
+                            soundPool.play(chordSound[1],1,1,1,0,1);
+                        }
+                    }
+
+
                     Log.d(
                             TAG,
                             "[TS:"
@@ -146,9 +185,9 @@ public class MainActivity extends AppCompatActivity {
                                     + "] "
                                     + getMultiHandLandmarksDebugString(multiHandLandmarks));
                 });
-
         PermissionHelper.checkAndRequestCameraPermissions(this);
     }
+
     //SoundPool
     @Override
     protected void onStart() {
@@ -169,6 +208,7 @@ public class MainActivity extends AppCompatActivity {
         chordSound[3] = soundPool.load(getApplicationContext(), R.raw.chord_a, 1);
         chordSound[4] = soundPool.load(getApplicationContext(), R.raw.chord_d, 1);
         chordSound[5] = soundPool.load(getApplicationContext(), R.raw.chord_em, 1);
+
     }
 
 
@@ -207,6 +247,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void surfaceCreated(SurfaceHolder holder) {
                                 processor.getVideoSurfaceOutput().setSurface(holder.getSurface());
+
                             }
 
                             @Override
@@ -228,6 +269,7 @@ public class MainActivity extends AppCompatActivity {
                                 processor.getVideoSurfaceOutput().setSurface(null);
                             }
                         });
+       // surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
 
     private void startCamera() {
@@ -240,37 +282,11 @@ public class MainActivity extends AppCompatActivity {
                     previewDisplayView.setVisibility(View.VISIBLE);
                 });
         cameraHelper.startCamera(this, CAMERA_FACING, /*surfaceTexture=*/ null);
-    }
 
-    public static void WriteCsv(String str) {
-        String root = Environment.getExternalStorageDirectory().getAbsolutePath(); //내장에 만든다
-        Log.d(TAG, "11111111111111111111111" + root);
-        String directoryName = "AirMusician"; // 저장 경로 폴더 생성 - 메인 저장소 최상위 디렉토리
-        final File myDir = new File(root + "/" + directoryName + "/dataSet");
-        if (!myDir.exists()) { // 폴더 없을 경우
-            myDir.mkdir(); // 폴더 생성
-        }
-        try {
-            BufferedWriter buf =
-                    new BufferedWriter(new FileWriter(myDir + "/Mute.csv", true)); // 데이터 파일 이름 ex)A_chord.csv
-            buf.append(str); // 파일 쓰기
-            buf.write(", 0\n"); //코드 분류값
-            buf.newLine(); // 개행
-            buf.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
-//    double[] denseArray = {0.4023429,0.6276824000000001,0.0,0.41993284,0.60309863,0.0,0.40992182,0.5734683,0.0,0.39859325,0.5291843,0.0,0.39081866,0.47737035,0.0,0.37766942,0.5610768,0.0,0.4408137,0.5635455,0.0,0.46573249,0.56591505,0.0,0.47462204,0.56582975,0.0,0.36409047,0.59305197,0.0,0.45248768,0.59354,0.0,0.47987312,0.59267265,0.0,0.49496764,0.5982906,0.0,0.36553264,0.6260260999999999,0.0,0.44301292,0.6228308000000001,0.0,0.47176942,0.61697865,0.0,0.4909321,0.6225253000000001,0.0,0.37400115,0.658155,0.0,0.43817282,0.6441031,0.0,0.46843532,0.6350836999999999,0.0,0.48044056,0.6410376,0.0};
-//    FVec fVecDense = FVec.Transformer.fromArray(denseArray,false);
-//
-//    double[] prediction = predictor.predict(fVecDense);
-//    int[] leafIndexes = predictor.predictLeaf(fVecDense);
-
 
     private String getMultiHandLandmarksDebugString(List<NormalizedLandmarkList> multiHandLandmarks) {
+
         if (multiHandLandmarks.isEmpty()) {
             return "No hand landmarks";
         }
@@ -298,6 +314,71 @@ public class MainActivity extends AppCompatActivity {
                                 + xyzStr
                                 + ")\n";
                 ++landmarkIndex;
+            }
+
+
+            String abc = "";
+            abc = h.postRequest(landmarks.getLandmarkList());
+            abc = abc.substring(1,2);
+            Log.d(TAG,"Chord "+ abc);
+
+            //WriteCsv(outputDateStr); //21개의 좌표 전달
+            switch(abc){
+                case CHORD_C:
+                    Log.d(TAG,"Detection Chord_________C "+ abc);
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            chord.setText("Detection Chord_________C ");
+                        }
+                    });
+                    break;
+                case CHORD_Dm:
+                    Log.d(TAG,"Detection Chord_________Dm "+ abc);
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            chord.setText("Detection Chord_________Dm ");
+                        }
+                    });
+                    break;
+                case CHORD_E:
+                    Log.d(TAG,"Detection Chord_________E "+ abc);
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            chord.setText("Detection Chord_________E ");
+                        }
+                    });
+                    break;
+                case CHORD_F:
+                    Log.d(TAG,"Detection Chord_________F "+ abc);
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            chord.setText("Detection Chord_________F ");
+                        }
+                    });
+                    break;
+                case CHORD_G7:
+                    Log.d(TAG,"Detection Chord_________G7 "+ abc);
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            chord.setText("Detection Chord_________G7 ");
+                        }
+                    });
+                    break;
+                case CHORD_A:
+                    Log.d(TAG,"Detection Chord_________A "+ abc);
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            chord.setText("Detection Chord_________A ");
+                        }
+                    });
+                    break;
+                case CHORD_B:
+                    Log.d(TAG,"Detection Chord_________B "+ abc);
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            chord.setText("Detection Chord_________B ");
+                        }
+                    });
 
                 //스트로크 재생
                 if (multiHandLandmarks.size() >= 1) {
@@ -310,53 +391,55 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             }
-            String abc = "";
-            HttpConnectionManager h = new HttpConnectionManager();
-            abc = h.postRequest(landmarks.getLandmarkList());
-            Log.d(TAG, "yyyyyyyyyyyyyyyy" + abc);
-
-            //WriteCsv(outputDateStr); //21개의 좌표 전달
-
-            int chord_number = 0;
-            switch (abc) {
-                case "0\n":
-                    chord_number = 0;
-                    Log.d(TAG, "yyyyyyyyyyyyyyyy" + abc);
-                    break;
-                case "1\n":
-                    chord_number = 0;
-                    Log.d(TAG, "yyyyyyyyyyyyyyyy" + abc);
-                    break;
-                case "21\n":
-                    chord_number = 0;
-                    Log.d(TAG, "yyyyyyyyyyyyyyyy" + abc);
-                    break;
-                case "3\n":
-                    chord_number = 0;
-                    Log.d(TAG, "yyyyyyyyyyyyyyyy" + abc);
-                    break;
-                case "4\n":
-                    chord_number = 0;
-                    Log.d(TAG, "yyyyyyyyyyyyyyyy" + abc);
-                    break;
-                case "57\n":
-                    chord_number = 0;
-                    Log.d(TAG, "yyyyyyyyyyyyyyyy" + abc);
-                    break;
-                case "6\n":
-                    chord_number = 0;
-                    Log.d(TAG, "yyyyyyyyyyyyyyyy" + abc);
-                    break;
-                case "7\n":
-                    chord_number = 0;
-                    Log.d(TAG, "yyyyyyyyyyyyyyyy" + abc);
-                    break;
-            }
-
-//            float test = landmarks.getLandmarkList().get(0).getX();
-            Log.d(TAG, "11111111111111111111111" + outputDateStr); //데이터 확인
             ++handIndex;
         }
         return multiHandLandmarksStr;
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        soundPool.release();
+    }
+
+
+    public void trigger() {
+
+        if(recording){
+            mMediaRecorder.stop();
+            mMediaRecorder.release();
+            recording = false;
+            Toast.makeText(MainActivity.this, "녹화가 종료되었습니다.", Toast.LENGTH_SHORT).show();
+        }else{
+            mMediaRecorder.start();
+            recording = true;
+            Toast.makeText(MainActivity.this, "녹화가 시작되었습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void setUpMediaRecorder() throws IOException {
+
+        mMediaRecorder = new MediaRecorder();
+        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        //mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+        //mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_LOW));
+        mMediaRecorder.setOutputFile(getVideoFile());
+        try {
+            mMediaRecorder.prepare();
+            System.out.println("준비완료");
+        } catch (IOException e) {
+            Log.e("start", "prepare() failed");
+        }
+    }
+
+    private File getVideoFile() {
+        // Create a video file
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        File videoFile;
+        videoFile = new File(fileFath + "REC_" + timeStamp + ".mp3");
+        return videoFile;
+    }
+
 }
