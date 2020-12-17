@@ -1,39 +1,26 @@
 package com.example.mediapipemultihandstrackingapp;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SyncStatusObserver;
 import android.graphics.SurfaceTexture;
-import android.hardware.Camera;
-import android.hardware.camera2.CameraManager;
 import android.media.AudioAttributes;
-import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.media.SoundPool;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Looper;
-import android.os.Message;
 import android.util.Log;
 import android.util.Size;
-import android.util.SparseIntArray;
-import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.mediapipemultihandstrackingapp.help.PermissionSupport;
 import com.example.mediapipemultihandstrackingapp.util.HttpConnectionManager;
 import com.example.mediapipemultihandstrackingapp.util.SoundManager;
 import com.google.mediapipe.components.CameraHelper;
@@ -46,20 +33,18 @@ import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmarkList;
 import com.google.mediapipe.framework.AndroidAssetUtil;
 import com.google.mediapipe.framework.PacketGetter;
 import com.google.mediapipe.glutil.EglManager;
-import com.gun0912.tedpermission.PermissionListener;
 
-
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static android.os.Environment.getExternalStorageDirectory;
-
 /** Main activity of MediaPipe example apps. */
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
     private SoundPool soundPool;
     private int[] chordSound = new int[6];
     boolean chk = false;
@@ -96,12 +81,13 @@ public class MainActivity extends AppCompatActivity{
     // corner, whereas MediaPipe in general assumes the image origin is at top-left.
     private static final boolean FLIP_FRAMES_VERTICALLY = true;
 
+
     static {
         // Load all native libraries needed by the app.
         System.loadLibrary("mediapipe_jni");
         System.loadLibrary("opencv_java3");
     }
-    private SurfaceView hiddenPreview;
+
     // {@link SurfaceTexture} where the camera-preview frames can be accessed.
     private SurfaceTexture previewFrameTexture;
     // {@link SurfaceView} that displays the camera-preview frames processed by a MediaPipe graph.
@@ -116,11 +102,13 @@ public class MainActivity extends AppCompatActivity{
     private ExternalTextureConverter converter;
     // Handles camera access via the {@link CameraX} Jetpack support library.
     private CameraXPreviewHelper cameraHelper;
-    private Size displaySize;
+
+    public MainActivity() throws IOException {
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
@@ -152,8 +140,6 @@ public class MainActivity extends AppCompatActivity{
             uiOption |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 
         decorView.setSystemUiVisibility( uiOption );
-
-        //뒤로가기 버튼
         backImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -175,7 +161,6 @@ public class MainActivity extends AppCompatActivity{
                         INPUT_VIDEO_STREAM_NAME,
                         INPUT_VIDEO_STREAM_NAME);
         processor.getVideoSurfaceOutput().setFlipY(FLIP_FRAMES_VERTICALLY);
-
         processor.addPacketCallback(
                 OUTPUT_LANDMARKS_STREAM_NAME,
                 (packet) -> {
@@ -200,10 +185,7 @@ public class MainActivity extends AppCompatActivity{
                                     + "] "
                                     + getMultiHandLandmarksDebugString(multiHandLandmarks));
                 });
-
-
         PermissionHelper.checkAndRequestCameraPermissions(this);
-
     }
 
     //SoundPool
@@ -229,58 +211,59 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
         converter = new ExternalTextureConverter(eglManager.getContext());
         converter.setFlipY(FLIP_FRAMES_VERTICALLY);
         converter.setConsumer(processor);
-
         if (PermissionHelper.cameraPermissionsGranted(this)) {
             startCamera();
         }
-
     }
+
     @Override
     protected void onPause() {
         super.onPause();
         converter.close();
     }
+
     @Override
     public void onRequestPermissionsResult(
             int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         PermissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
     }
-    private void setupPreviewDisplayView() {
 
+    private void setupPreviewDisplayView() {
         previewDisplayView.setVisibility(View.GONE);
         ViewGroup viewGroup = findViewById(R.id.preview_display_layout);
         viewGroup.addView(previewDisplayView);
-        surfaceHolder = previewDisplayView.getHolder();
-        previewDisplayView.getHolder().addCallback(
+        previewDisplayView
+                .getHolder()
+                .addCallback(
                         new SurfaceHolder.Callback() {
                             @Override
                             public void surfaceCreated(SurfaceHolder holder) {
-
                                 processor.getVideoSurfaceOutput().setSurface(holder.getSurface());
 
                             }
+
                             @Override
                             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-
                                 // (Re-)Compute the ideal size of the camera-preview display (the area that the
                                 // camera-preview frames get rendered onto, potentially with scaling and rotation)
                                 // based on the size of the SurfaceView that contains the display.
                                 Size viewSize = new Size(width, height);
-                                displaySize = cameraHelper.computeDisplaySizeFromViewSize(viewSize);
+                                Size displaySize = cameraHelper.computeDisplaySizeFromViewSize(viewSize);
                                 // Connect the converter to the camera-preview frames as its input (via
                                 // previewFrameTexture), and configure the output width and height as the computed
                                 // display size.
-                                converter.setSurfaceTextureAndAttachToGLContext(previewFrameTexture, displaySize.getWidth(), displaySize.getHeight());
+                                converter.setSurfaceTextureAndAttachToGLContext(
+                                        previewFrameTexture, displaySize.getWidth(), displaySize.getHeight());
                             }
+
                             @Override
                             public void surfaceDestroyed(SurfaceHolder holder) {
                                 processor.getVideoSurfaceOutput().setSurface(null);
@@ -289,23 +272,19 @@ public class MainActivity extends AppCompatActivity{
        // surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
 
-
     private void startCamera() {
-
         cameraHelper = new CameraXPreviewHelper();
         cameraHelper.setOnCameraStartedListener(
                 surfaceTexture -> {
                     previewFrameTexture = surfaceTexture;
+                    // Make the display view visible to start showing the preview. This triggers the
+                    // SurfaceHolder.Callback added to (the holder of) previewDisplayView.
                     previewDisplayView.setVisibility(View.VISIBLE);
                 });
         cameraHelper.startCamera(this, CAMERA_FACING, /*surfaceTexture=*/ null);
-        try {
-            setUpMediaRecorder();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
     }
+
     private String getMultiHandLandmarksDebugString(List<NormalizedLandmarkList> multiHandLandmarks) {
 
         if (multiHandLandmarks.isEmpty()) {
@@ -335,13 +314,6 @@ public class MainActivity extends AppCompatActivity{
                                 + xyzStr
                                 + ")\n";
                 ++landmarkIndex;
-                //코드 판별
-               //soundPool.play(chordSound[1],1,1,1,0,1);
-                //스트로크 재생
-
-
-
-
             }
 
 
@@ -407,11 +379,18 @@ public class MainActivity extends AppCompatActivity{
                             chord.setText("Detection Chord_________B ");
                         }
                     });
-                    break;
-            }
 
-//            float test = landmarks.getLandmarkList().get(0).getX();
-            Log.d(TAG,"11111111111111111111111"+outputDateStr); //데이터 확인
+                //스트로크 재생
+                if (multiHandLandmarks.size() >= 1) {
+                    if (multiHandLandmarks.get(0).getLandmarkList().get(8).getX() > 0.6){
+                        chk=true;
+                    }else if (multiHandLandmarks.get(0).getLandmarkList().get(8).getX() <= 0.4 && chk==true){
+                        chk = false;;
+                        soundPool.play(chordSound[1],1,1,1,0,1);
+                    }
+                }
+
+            }
             ++handIndex;
         }
         return multiHandLandmarksStr;
@@ -437,25 +416,6 @@ public class MainActivity extends AppCompatActivity{
             Toast.makeText(MainActivity.this, "녹화가 시작되었습니다.", Toast.LENGTH_SHORT).show();
         }
     }
-
-    private static final int SENSOR_ORIENTATION_DEFAULT_DEGREES = 90;
-    private static final int SENSOR_ORIENTATION_INVERSE_DEGREES = 270;
-    private static final SparseIntArray DEFAULT_ORIENTATIONS = new SparseIntArray();
-    private static final SparseIntArray INVERSE_ORIENTATIONS = new SparseIntArray();
-    static {
-        DEFAULT_ORIENTATIONS.append(Surface.ROTATION_0, 90);
-        DEFAULT_ORIENTATIONS.append(Surface.ROTATION_90, 0);
-        DEFAULT_ORIENTATIONS.append(Surface.ROTATION_180, 270);
-        DEFAULT_ORIENTATIONS.append(Surface.ROTATION_270, 180);
-    }
-
-    static {
-        INVERSE_ORIENTATIONS.append(Surface.ROTATION_0, 270);
-        INVERSE_ORIENTATIONS.append(Surface.ROTATION_90, 180);
-        INVERSE_ORIENTATIONS.append(Surface.ROTATION_180, 90);
-        INVERSE_ORIENTATIONS.append(Surface.ROTATION_270, 0);
-    }
-
 
     private void setUpMediaRecorder() throws IOException {
 
@@ -483,4 +443,3 @@ public class MainActivity extends AppCompatActivity{
     }
 
 }
-

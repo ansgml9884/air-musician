@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/-893252954/MediaPipeMultiHandsTrackingApp.iml" filepath="$PROJECT_DIR$/.idea/modules/-893252954/MediaPipeMultiHandsTrackingApp.iml" group="MediaPipeMultiHandsTrackingApp" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/MediaPipeMultiHandsTrackingApp-app.iml" filepath="$PROJECT_DIR$/.idea/modules/MediaPipeMultiHandsTrackingApp-app.iml" group="MediaPipeMultiHandsTrackingApp/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/936136985/air-musician-MediaPipeMultiHandsTrackingApp.iml" filepath="$PROJECT_DIR$/.idea/modules/936136985/air-musician-MediaPipeMultiHandsTrackingApp.iml" group="MediaPipeMultiHandsTrackingApp" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app.iml" group="MediaPipeMultiHandsTrackingApp/app" />
     </modules>
   </component>
