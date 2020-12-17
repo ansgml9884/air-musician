@@ -50,7 +50,7 @@
     <ImageView
         android:id="@+id/square1"
         android:layout_width="530dp"
-        android:layout_height="270dp"
+        android:layout_height="240dp"
         android:background="@drawable/setting_image"
         app:layout_constraintLeft_toRightOf="@id/leftBtn"
         app:layout_constraintRight_toLeftOf="@id/rightBtn"

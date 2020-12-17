@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -47,28 +48,39 @@
         android:layout_marginLeft="20dp"
         />
 
+
     <ImageView
         android:id="@+id/square1"
-        android:layout_width="200dp"
+        android:layout_width="365dp"
         android:layout_height="200dp"
-        android:background="@drawable/square"
+        android:layout_marginTop="104dp"
+        app:layout_constraintHorizontal_bias="0.061"
         app:layout_constraintLeft_toRightOf="@id/leftBtn"
-        app:layout_constraintTop_toBottomOf="@id/settingTitle"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="40dp"
-        />
-
-    <ImageView
-        android:id="@+id/square2"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:background="@drawable/square"
         app:layout_constraintRight_toLeftOf="@id/rightBtn"
-        app:layout_constraintTop_toBottomOf="@id/settingTitle"
-        android:layout_marginTop="30dp"
-        android:layout_marginRight="40dp"
+        app:layout_constraintTop_toBottomOf="@id/up_tv" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@id/tv1"
+        app:layout_constraintTop_toTopOf="@id/square1"
+        style="@style/setting_play"
+        android:layout_marginTop="20dp"
+        android:text="왼손 : 코드"
+
         />
 
+    <TextView
+        android:id="@+id/tv1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintRight_toLeftOf="@id/rightBtn"
+        app:layout_constraintTop_toTopOf="@id/square1"
+        style="@style/setting_play"
+        android:text="오른손 : 스트로크"
+        android:layout_marginTop="70dp"
+        android:layout_marginRight="20dp"
+        />
 
 
     <ImageButton

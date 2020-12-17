@@ -6,9 +6,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.example.mediapipemultihandstrackingapp.MainMenuActivity;
 import com.example.mediapipemultihandstrackingapp.R;
 
@@ -31,6 +34,10 @@ public class HelpActivity2 extends AppCompatActivity {
             uiOption |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 
         decorView.setSystemUiVisibility( uiOption );
+
+        ImageView imageView = (ImageView)findViewById(R.id.square1);
+        GlideDrawableImageViewTarget gifImage = new GlideDrawableImageViewTarget(imageView);
+        Glide.with(this).load(R.drawable.play_help).into(gifImage);
 
 
         ImageButton lbtn = (ImageButton)findViewById(R.id.leftBtn);

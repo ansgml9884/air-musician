@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.graphics.SurfaceTexture;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
@@ -45,6 +46,13 @@ import java.util.List;
 
 /** Main activity of MediaPipe example apps. */
 public class MainActivity extends AppCompatActivity {
+    private SoundPool soundPool;
+    private int[] chordSound = new int[6];
+    boolean chk = false;
+
+    private int	uiOption;
+    private View decorView;
+
     private static final String TAG = "MainActivity";
     private static final String BINARY_GRAPH_NAME = "multi_hand_tracking_mobile_gpu.binarypb";
     private static final String INPUT_VIDEO_STREAM_NAME = "input_video";
@@ -91,21 +99,18 @@ public class MainActivity extends AppCompatActivity {
         setupPreviewDisplayView();
         SoundManager.initSounds(getApplicationContext());
         ImageButton backImageBtn = (ImageButton) findViewById(R.id.back_img_btn);
-        //뒤로가기 버튼
-//        AssetManager assetManager = getAssets();
-//        try {
-//            InputStream is = assetManager.open("xgboost-model");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        AssetManager assetManager = getAssets();
-//        try {
-//            InputStream is = null;
-//            is = assetManager.open("xgboost-model");
-//            predictor = new Predictor(is);
-//        }  catch (IOException e) {
-//            e.printStackTrace();
-//        }
+
+        //하단 바(소프트키) 없애기
+        decorView = getWindow().getDecorView();
+        uiOption = getWindow().getDecorView().getSystemUiVisibility();
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH )
+            uiOption |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN )
+            uiOption |= View.SYSTEM_UI_FLAG_FULLSCREEN;
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT )
+            uiOption |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+
+        decorView.setSystemUiVisibility( uiOption );
 
         backImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,6 +149,28 @@ public class MainActivity extends AppCompatActivity {
 
         PermissionHelper.checkAndRequestCameraPermissions(this);
     }
+    //SoundPool
+    @Override
+    protected void onStart() {
+        super.onStart();
+        AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_GAME)
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .build();
+
+        soundPool = new SoundPool.Builder()
+                .setAudioAttributes(audioAttributes)
+                .setMaxStreams(6)
+                .build();
+
+        chordSound[0] = soundPool.load(getApplicationContext(), R.raw.chord_c, 1);
+        chordSound[1] = soundPool.load(getApplicationContext(), R.raw.chord_f, 1);
+        chordSound[2] = soundPool.load(getApplicationContext(), R.raw.chord_dm, 1);
+        chordSound[3] = soundPool.load(getApplicationContext(), R.raw.chord_a, 1);
+        chordSound[4] = soundPool.load(getApplicationContext(), R.raw.chord_d, 1);
+        chordSound[5] = soundPool.load(getApplicationContext(), R.raw.chord_em, 1);
+    }
+
 
     @Override
     protected void onResume() {
@@ -271,6 +298,16 @@ public class MainActivity extends AppCompatActivity {
                                 + xyzStr
                                 + ")\n";
                 ++landmarkIndex;
+
+                //스트로크 재생
+                if (multiHandLandmarks.size() >= 1) {
+                    if (multiHandLandmarks.get(0).getLandmarkList().get(8).getX() > 0.6){
+                        chk=true;
+                    }else if (multiHandLandmarks.get(0).getLandmarkList().get(8).getX() <= 0.4 && chk==true){
+                        chk = false;;
+                        soundPool.play(chordSound[1],1,1,1,0,1);
+                    }
+                }
 
             }
             String abc = "";
