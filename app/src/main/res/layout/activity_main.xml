@@ -22,9 +22,6 @@
             android:layout_height="fill_parent"
             android:gravity="center"
             android:text="@string/no_camera_access" />
-
-
-
     </FrameLayout>
 
 
@@ -53,4 +50,15 @@
         android:background="@drawable/rec"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
+
+    <TextView
+        android:id="@+id/chord_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="chord"
+        android:textColor="#ff0000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/imageView3"
+        app:layout_constraintStart_toStartOf="@+id/preview_display_layout"
+        app:layout_constraintTop_toTopOf="@+id/preview_display_layout" />
 </androidx.constraintlayout.widget.ConstraintLayout>
