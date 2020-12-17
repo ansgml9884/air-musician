@@ -1,14 +1,18 @@
 package com.example.mediapipemultihandstrackingapp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SyncStatusObserver;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.hardware.camera2.CameraManager;
 import android.media.AudioAttributes;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.media.SoundPool;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -24,11 +28,13 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mediapipemultihandstrackingapp.help.PermissionSupport;
+import com.example.mediapipemultihandstrackingapp.util.HttpConnectionManager;
 import com.example.mediapipemultihandstrackingapp.util.SoundManager;
 import com.google.mediapipe.components.CameraHelper;
 import com.google.mediapipe.components.CameraXPreviewHelper;
@@ -40,34 +46,44 @@ import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmarkList;
 import com.google.mediapipe.framework.AndroidAssetUtil;
 import com.google.mediapipe.framework.PacketGetter;
 import com.google.mediapipe.glutil.EglManager;
+import com.gun0912.tedpermission.PermissionListener;
 
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static android.os.Environment.getExternalStorageDirectory;
+
 /** Main activity of MediaPipe example apps. */
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity{
     private SoundPool soundPool;
     private int[] chordSound = new int[6];
-    private Button[] chordButton = new Button[6];
     boolean chk = false;
     private int	uiOption;
     private View decorView;
-    private Camera camera;
     private ImageButton btn_record;
-    private SurfaceView surfaceView;
     private boolean recording = false;
     private SurfaceHolder surfaceHolder;
     private MediaRecorder mMediaRecorder;
-    public static final int REQUEST_CAMERA = 1;
-    private PermissionSupport permission;
-
+    private TextView chord;
+    HttpConnectionManager h;
 
     private String fileFath = "/storage/emulated/0/AirMusician/";
 
-    private static Handler mCameraHandler;
+    // Guiter Chords
+    private static final String CHORD_C = "1";
+    private static final String CHORD_Dm = "2";
+    private static final String CHORD_E = "3";
+    private static final String CHORD_F = "4";
+    private static final String CHORD_G7 = "5";
+    private static final String CHORD_A = "6";
+    private static final String CHORD_B = "7";
+
+
     private static final String TAG = "MainActivity";
     private static final String BINARY_GRAPH_NAME = "multi_hand_tracking_mobile_gpu.binarypb";
     private static final String INPUT_VIDEO_STREAM_NAME = "input_video";
@@ -85,6 +101,7 @@ public class MainActivity extends AppCompatActivity  {
         System.loadLibrary("mediapipe_jni");
         System.loadLibrary("opencv_java3");
     }
+    private SurfaceView hiddenPreview;
     // {@link SurfaceTexture} where the camera-preview frames can be accessed.
     private SurfaceTexture previewFrameTexture;
     // {@link SurfaceView} that displays the camera-preview frames processed by a MediaPipe graph.
@@ -103,16 +120,18 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        permissionCheck();
+
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
+
         previewDisplayView = new SurfaceView(this);
+       // mCamera = getCameraInstance();
+        h = new HttpConnectionManager();
         setupPreviewDisplayView();
         SoundManager.initSounds(getApplicationContext());
         ImageButton backImageBtn = (ImageButton)findViewById(R.id.back_img_btn);
-        chordButton[0] = findViewById(R.id.chord_c);
-        chordButton[1] = findViewById(R.id.chord_f);
-        chordButton[2] = findViewById(R.id.chord_dm);
+        chord = findViewById(R.id.chord_view);
+
         btn_record = findViewById(R.id.rec_img_btn);
         btn_record.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,7 +152,6 @@ public class MainActivity extends AppCompatActivity  {
             uiOption |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 
         decorView.setSystemUiVisibility( uiOption );
-
 
         //뒤로가기 버튼
         backImageBtn.setOnClickListener(new View.OnClickListener() {
@@ -164,6 +182,17 @@ public class MainActivity extends AppCompatActivity  {
                     Log.d(TAG, "Received multi-hand landmarks packet.");
                     List<NormalizedLandmarkList> multiHandLandmarks =
                             PacketGetter.getProtoVector(packet, NormalizedLandmarkList.parser());
+
+                    if (multiHandLandmarks.size() >= 1) {
+                        if (multiHandLandmarks.get(0).getLandmarkList().get(9).getX() > 0.6){
+                            chk=true;
+                        }else if (multiHandLandmarks.get(0).getLandmarkList().get(9).getX() <= 0.4 && chk==true){
+                            chk = false;;
+                            soundPool.play(chordSound[1],1,1,1,0,1);
+                        }
+                    }
+
+
                     Log.d(
                             TAG,
                             "[TS:"
@@ -172,29 +201,10 @@ public class MainActivity extends AppCompatActivity  {
                                     + getMultiHandLandmarksDebugString(multiHandLandmarks));
                 });
 
+
         PermissionHelper.checkAndRequestCameraPermissions(this);
+
     }
-
-
-//    private void permissionCheck(){
-//
-//        // SDK 23버전 이하 버전에서는 Permission이 필요하지 않습니다.
-//        if(Build.VERSION.SDK_INT >= 23){
-//            // 방금 전 만들었던 클래스 객체 생성
-//            permission = new PermissionSupport(this, this);
-//            // 권한 체크한 후에 리턴이 false로 들어온다면
-//            if (!permission.checkPermission()){
-//                // 권한 요청을 해줍니다.
-//                permission.requestPermission();
-//            }
-//            startCamera();
-//            try {
-//                setUpMediaRecorder();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
 
     //SoundPool
     @Override
@@ -217,8 +227,6 @@ public class MainActivity extends AppCompatActivity  {
         chordSound[4] = soundPool.load(getApplicationContext(), R.raw.chord_d, 1);
         chordSound[5] = soundPool.load(getApplicationContext(), R.raw.chord_em, 1);
 
-
-
     }
 
     @Override
@@ -230,12 +238,6 @@ public class MainActivity extends AppCompatActivity  {
 
         if (PermissionHelper.cameraPermissionsGranted(this)) {
             startCamera();
-            try {
-                setUpMediaRecorder();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
         }
 
     }
@@ -263,9 +265,11 @@ public class MainActivity extends AppCompatActivity  {
                             public void surfaceCreated(SurfaceHolder holder) {
 
                                 processor.getVideoSurfaceOutput().setSurface(holder.getSurface());
+
                             }
                             @Override
                             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
 
                                 // (Re-)Compute the ideal size of the camera-preview display (the area that the
                                 // camera-preview frames get rendered onto, potentially with scaling and rotation)
@@ -282,6 +286,7 @@ public class MainActivity extends AppCompatActivity  {
                                 processor.getVideoSurfaceOutput().setSurface(null);
                             }
                         });
+       // surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
 
 
@@ -294,93 +299,119 @@ public class MainActivity extends AppCompatActivity  {
                     previewDisplayView.setVisibility(View.VISIBLE);
                 });
         cameraHelper.startCamera(this, CAMERA_FACING, /*surfaceTexture=*/ null);
-
-        mMediaRecorder = new MediaRecorder();
-        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-//        mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.DEFAULT);
-        //mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
-//        CamcorderProfile profile = CamcorderProfile.get(Camera.CameraInfo.CAMERA_FACING_FRONT,CamcorderProfile.QUALITY_HIGH);
-//        profile.fileFormat = MediaRecorder.OutputFormat.MPEG_4;
-//        profile.videoCodec = MediaRecorder.VideoEncoder.DEFAULT;
-//        profile.audioCodec = MediaRecorder.AudioEncoder.DEFAULT;
-
-        // Apply to MediaRecorder
-//        mMediaRecorder.setOrientationHint(90);
-//        mMediaRecorder.setProfile(profile);
-        mMediaRecorder.setOutputFile(getVideoFile());
-//        mMediaRecorder.setVideoSize(mVideoSize.getWidth(), mVideoSize.getHeight());
-//        mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
-//        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-
         try {
-            mMediaRecorder.prepare();
+            setUpMediaRecorder();
         } catch (IOException e) {
-            Log.e("start", "prepare() failed");
+            e.printStackTrace();
         }
-
 
     }
     private String getMultiHandLandmarksDebugString(List<NormalizedLandmarkList> multiHandLandmarks) {
+
         if (multiHandLandmarks.isEmpty()) {
             return "No hand landmarks";
         }
         String multiHandLandmarksStr = "Number of hands detected: " + multiHandLandmarks.size() + "\n";
+        String outputDateStr = "";
         int handIndex = 0;
         for (NormalizedLandmarkList landmarks : multiHandLandmarks) {
             multiHandLandmarksStr +=
                     "\t#Hand landmarks for hand[" + handIndex + "]: " + landmarks.getLandmarkCount() + "\n";
             int landmarkIndex = 0;
             for (NormalizedLandmark landmark : landmarks.getLandmarkList()) {
+                if (landmarkIndex != 0) {
+                    outputDateStr += ",";
+                }
+                String xyzStr = landmark.getX()
+                        + ", "
+                        + landmark.getY()
+                        + ", "
+                        + landmark.getZ();
+                outputDateStr += xyzStr;
                 multiHandLandmarksStr +=
                         "\t\tLandmark ["
                                 + landmarkIndex
                                 + "]: ("
-                                + landmark.getX()
-                                + ", "
-                                + landmark.getY()
-                                + ", "
-                                + landmark.getZ()
+                                + xyzStr
                                 + ")\n";
                 ++landmarkIndex;
-
-                int hand_count = multiHandLandmarks.size();
-                int chord_number = 0;
-
                 //코드 판별
-                //soundPool.play(chordSound[1],1,1,1,0,1);
+               //soundPool.play(chordSound[1],1,1,1,0,1);
                 //스트로크 재생
 
-                if (multiHandLandmarks.get(hand_count-1).getLandmarkList().get(8).getX() < multiHandLandmarks.get(hand_count-1).getLandmarkList().get(12).getX()){
-                    Log.d(TAG,"EmEmEmEmEmEmEmEmEmEmEmEmEm");
-                    chord_number = 5;
-                    //soundPool.play(chordSound[5],1,1,1,0,1);
-                }else if (multiHandLandmarks.get(hand_count-1).getLandmarkList().get(12).getX() < multiHandLandmarks.get(hand_count-1).getLandmarkList().get(16).getX()){
-                    Log.d(TAG,"DDDDDDDDDDDDDDDDDDDDDDDDDD");
-                    chord_number = 4;
-                    //soundPool.play(chordSound[4],1,1,1,0,1);
-                }else{
-                    Log.d(TAG,"AAAAAAAAAAAAAAAAAAAAAAAAAA");
-                    chord_number = 3;
-                    //soundPool.play(chordSound[3],1,1,1,0,1);
-                }
 
 
-                if (multiHandLandmarks.size()==2) {
-                    Log.d(TAG, "AAAAAAAAA" + multiHandLandmarks.get(0).getLandmarkList().get(0).getY() + "AAAAAAAAAAAAAAAAA" + multiHandLandmarks.get(1).getLandmarkList().get(0).getY());
-                    if (multiHandLandmarks.get(0).getLandmarkList().get(8).getX() > 0.6){
-                        chk=true;
-                    }else if (multiHandLandmarks.get(0).getLandmarkList().get(8).getX() < 0.3 && chk==true){
-                        chk = false;
-                        Toast.makeText(MainActivity.this, ""+chk, Toast.LENGTH_SHORT).show();
-                    }
-                }
-                ///////////////////////////////////////
-                //x 자표가 0.5 이상일때 소리나기
 
-                //////////////////////////////////////
             }
+
+
+            String abc = "";
+            abc = h.postRequest(landmarks.getLandmarkList());
+            abc = abc.substring(1,2);
+            Log.d(TAG,"Chord "+ abc);
+
+            //WriteCsv(outputDateStr); //21개의 좌표 전달
+            switch(abc){
+                case CHORD_C:
+                    Log.d(TAG,"Detection Chord_________C "+ abc);
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            chord.setText("Detection Chord_________C ");
+                        }
+                    });
+                    break;
+                case CHORD_Dm:
+                    Log.d(TAG,"Detection Chord_________Dm "+ abc);
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            chord.setText("Detection Chord_________Dm ");
+                        }
+                    });
+                    break;
+                case CHORD_E:
+                    Log.d(TAG,"Detection Chord_________E "+ abc);
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            chord.setText("Detection Chord_________E ");
+                        }
+                    });
+                    break;
+                case CHORD_F:
+                    Log.d(TAG,"Detection Chord_________F "+ abc);
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            chord.setText("Detection Chord_________F ");
+                        }
+                    });
+                    break;
+                case CHORD_G7:
+                    Log.d(TAG,"Detection Chord_________G7 "+ abc);
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            chord.setText("Detection Chord_________G7 ");
+                        }
+                    });
+                    break;
+                case CHORD_A:
+                    Log.d(TAG,"Detection Chord_________A "+ abc);
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            chord.setText("Detection Chord_________A ");
+                        }
+                    });
+                    break;
+                case CHORD_B:
+                    Log.d(TAG,"Detection Chord_________B "+ abc);
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            chord.setText("Detection Chord_________B ");
+                        }
+                    });
+                    break;
+            }
+
+//            float test = landmarks.getLandmarkList().get(0).getX();
+            Log.d(TAG,"11111111111111111111111"+outputDateStr); //데이터 확인
             ++handIndex;
         }
         return multiHandLandmarksStr;
@@ -399,11 +430,11 @@ public class MainActivity extends AppCompatActivity  {
             mMediaRecorder.stop();
             mMediaRecorder.release();
             recording = false;
-            Toast.makeText(MainActivity.this, "녹화가 종료되었습니다."+ recording, Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "녹화가 종료되었습니다.", Toast.LENGTH_SHORT).show();
         }else{
             mMediaRecorder.start();
             recording = true;
-            Toast.makeText(MainActivity.this, "녹화가 시작되었습니다."+ recording, Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "녹화가 시작되었습니다.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -428,53 +459,20 @@ public class MainActivity extends AppCompatActivity  {
 
     private void setUpMediaRecorder() throws IOException {
 
+        mMediaRecorder = new MediaRecorder();
+        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        //mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+        //mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_LOW));
+        mMediaRecorder.setOutputFile(getVideoFile());
+        try {
+            mMediaRecorder.prepare();
+            System.out.println("준비완료");
+        } catch (IOException e) {
+            Log.e("start", "prepare() failed");
+        }
     }
-
-//    private void startRecordingVideo() {
-//
-//        try {
-//            closePreviewSession();
-//            setUpMediaRecorder();
-//            SurfaceTexture texture = binding.preview.getSurfaceTexture();
-//            assert texture != null;
-//            mCaptureRequestBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_RECORD);
-//
-//            List<Surface> surfaces = new ArrayList<>();
-//
-//            Surface previewSurface = new Surface(texture);
-//            surfaces.add(previewSurface);
-//            mCaptureRequestBuilder.addTarget(previewSurface);
-//
-//            Surface recordSurface = mMediaRecorder.getSurface();
-//            surfaces.add(recordSurface);
-//            mCaptureRequestBuilder.addTarget(recordSurface);
-//
-//            mCameraDevice.createCaptureSession(surfaces, new CameraCaptureSession.StateCallback() {
-//                @Override
-//                public void onConfigured(@NonNull CameraCaptureSession session) {
-//                    mCameraCaptureSession = session;
-//                    updatePreview();
-//                    getActivity().runOnUiThread(() -> {
-//                        binding.pictureBtn.setText(R.string.stop);
-//                        mIsRecordingVideo = true;
-//
-//                        mMediaRecorder.start();
-//                    });
-//                }
-//
-//                @Override
-//                public void onConfigureFailed(@NonNull CameraCaptureSession session) {
-//                    Activity activity = getActivity();
-//                    if (null != activity) {
-//                        Toast.makeText(activity, "Failed", Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//            }, mBackgroundHandler);
-//            timer();
-//        } catch (CameraAccessException | IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     private File getVideoFile() {
         // Create a video file
@@ -483,8 +481,6 @@ public class MainActivity extends AppCompatActivity  {
         videoFile = new File(fileFath + "REC_" + timeStamp + ".mp3");
         return videoFile;
     }
-
-
 
 }
 

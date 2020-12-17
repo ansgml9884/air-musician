@@ -9,8 +9,13 @@
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-feature android:name="android.hardware.microphone"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.RECORD_VIDEO" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.write_external_storage" />
+
+
+
 
     <!-- 디렉토리 파일 읽고/쓰기 권한-->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -22,7 +27,6 @@
 
     <application
         android:requestLegacyExternalStorage="true"
-
         android:allowBackup="true"
         android:icon="@drawable/main_icon"
         android:label="@string/app_name"
