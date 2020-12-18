@@ -4,10 +4,10 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/-893252954/MediaPipeMultiHandsTrackingApp.iml" filepath="$PROJECT_DIR$/.idea/modules/-893252954/MediaPipeMultiHandsTrackingApp.iml" group="MediaPipeMultiHandsTrackingApp" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/MediaPipeMultiHandsTrackingApp-app.iml" filepath="$PROJECT_DIR$/.idea/modules/MediaPipeMultiHandsTrackingApp-app.iml" group="MediaPipeMultiHandsTrackingApp/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1446159862/air-musician-4096fba5c69695f25aee63eccb1f443c2aaf9223-air-musician-MediaPipeMultiHandsTrackingApp.iml" filepath="$PROJECT_DIR$/.idea/modules/-1446159862/air-musician-4096fba5c69695f25aee63eccb1f443c2aaf9223-air-musician-MediaPipeMultiHandsTrackingApp.iml" group="MediaPipeMultiHandsTrackingApp" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/936136985/air-musician-MediaPipeMultiHandsTrackingApp.iml" filepath="$PROJECT_DIR$/.idea/modules/936136985/air-musician-MediaPipeMultiHandsTrackingApp.iml" group="MediaPipeMultiHandsTrackingApp" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/air-musician-app.iml" filepath="$PROJECT_DIR$/.idea/modules/air-musician-app.iml" group="MediaPipeMultiHandsTrackingApp/app" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app.iml" group="MediaPipeMultiHandsTrackingApp/app" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1700812810/mediapipe_multi_hands_tracking_aar_example-master-MediaPipeMultiHandsTrackingApp.iml" filepath="$PROJECT_DIR$/.idea/modules/1700812810/mediapipe_multi_hands_tracking_aar_example-master-MediaPipeMultiHandsTrackingApp.iml" group="MediaPipeMultiHandsTrackingApp" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mediapipe_multi_hands_tracking_aar_example-master-app.iml" filepath="$PROJECT_DIR$/.idea/modules/mediapipe_multi_hands_tracking_aar_example-master-app.iml" group="MediaPipeMultiHandsTrackingApp/app" />
     </modules>
   </component>
 </project>

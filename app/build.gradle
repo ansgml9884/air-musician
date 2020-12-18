@@ -50,7 +50,6 @@ dependencies {
     implementation 'com.scwang.wave:MultiWaveHeader:1.0.0-alpha-1'
     implementation 'me.itangqi.waveloadingview:library:0.3.5'
     implementation 'com.airbnb.android:lottie:2.3.0'
-    implementation 'gun0912.ted:tedpermission:2.0.0'
     
     // CameraX core library
     def camerax_version = "1.0.0-alpha06"

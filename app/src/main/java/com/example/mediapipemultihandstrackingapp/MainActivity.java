@@ -21,7 +21,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.mediapipemultihandstrackingapp.util.HttpConnectionManager;
 import com.example.mediapipemultihandstrackingapp.util.SoundManager;
 import com.google.mediapipe.components.CameraHelper;
 import com.google.mediapipe.components.CameraXPreviewHelper;
@@ -42,6 +41,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
 
 /** Main activity of MediaPipe example apps. */
 public class MainActivity extends AppCompatActivity {
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         previewDisplayView = new SurfaceView(this);
-       // mCamera = getCameraInstance();
+        // mCamera = getCameraInstance();
         h = new HttpConnectionManager();
         setupPreviewDisplayView();
         SoundManager.initSounds(getApplicationContext());
@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
                         eglManager.getNativeContext(),
                         BINARY_GRAPH_NAME,
                         INPUT_VIDEO_STREAM_NAME,
-                        INPUT_VIDEO_STREAM_NAME);
+                        OUTPUT_VIDEO_STREAM_NAME);
         processor.getVideoSurfaceOutput().setFlipY(FLIP_FRAMES_VERTICALLY);
         processor.addPacketCallback(
                 OUTPUT_LANDMARKS_STREAM_NAME,
@@ -168,15 +168,14 @@ public class MainActivity extends AppCompatActivity {
                     List<NormalizedLandmarkList> multiHandLandmarks =
                             PacketGetter.getProtoVector(packet, NormalizedLandmarkList.parser());
 
-                    //스트로크 재생
-                    if (multiHandLandmarks.size() >= 1) {
-                        if (multiHandLandmarks.get(0).getLandmarkList().get(9).getX() > 0.6){
-                            chk=true;
-                        }else if (multiHandLandmarks.get(0).getLandmarkList().get(9).getX() <= 0.4 && chk==true){
-                            chk = false;;
-                            soundPool.play(chordSound[1],1,1,1,0,1);
-                        }
-                    }
+//                    if (multiHandLandmarks.size() >= 1) {
+//                        if (multiHandLandmarks.get(0).getLandmarkList().get(9).getX() > 0.5){
+//                            chk=true;
+//                        }else if (multiHandLandmarks.get(0).getLandmarkList().get(9).getX() <= 0.4 && chk==true){
+//                            chk = false;;
+//                            soundPool.play(chordSound[1],1,1,1,0,1);
+//                        }
+//                    }
 
 
                     Log.d(
@@ -270,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
                                 processor.getVideoSurfaceOutput().setSurface(null);
                             }
                         });
-       // surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        // surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
 
     private void startCamera() {
@@ -285,12 +284,13 @@ public class MainActivity extends AppCompatActivity {
         cameraHelper.startCamera(this, CAMERA_FACING, /*surfaceTexture=*/ null);
 
     }
-
+    static String abc = "";
     private String getMultiHandLandmarksDebugString(List<NormalizedLandmarkList> multiHandLandmarks) {
 
         if (multiHandLandmarks.isEmpty()) {
             return "No hand landmarks";
         }
+//        static String abc = "";
         String multiHandLandmarksStr = "Number of hands detected: " + multiHandLandmarks.size() + "\n";
         String outputDateStr = "";
         int handIndex = 0;
@@ -298,92 +298,122 @@ public class MainActivity extends AppCompatActivity {
             multiHandLandmarksStr +=
                     "\t#Hand landmarks for hand[" + handIndex + "]: " + landmarks.getLandmarkCount() + "\n";
             int landmarkIndex = 0;
-            for (NormalizedLandmark landmark : landmarks.getLandmarkList()) {
-                if (landmarkIndex != 0) {
-                    outputDateStr += ",";
-                }
-                String xyzStr = landmark.getX()
-                        + ", "
-                        + landmark.getY()
-                        + ", "
-                        + landmark.getZ();
-                outputDateStr += xyzStr;
-                multiHandLandmarksStr +=
-                        "\t\tLandmark ["
-                                + landmarkIndex
-                                + "]: ("
-                                + xyzStr
-                                + ")\n";
-                ++landmarkIndex;
+//            for (NormalizedLandmark landmark : landmarks.getLandmarkList()) {
+//                if (landmarkIndex != 0) {
+//                    outputDateStr += ",";
+//                }
+//                String xyzStr = landmark.getX()
+//                        + ", "
+//                        + landmark.getY()
+//                        + ", "
+//                        + landmark.getZ();
+//                outputDateStr += xyzStr;
+//                multiHandLandmarksStr +=
+//                        "\t\tLandmark ["
+//                                + landmarkIndex
+//                                + "]: ("
+//                                + xyzStr
+//                                + ")\n";
+//                ++landmarkIndex;
+//            }
+//            abc = h.postRequest(landmarks.getLandmarkList());
+            Timer t = new java.util.Timer();
+            t.schedule(
+                    new java.util.TimerTask() {
+                        @Override
+                        public void run() {
+                            abc = h.postRequest(landmarks.getLandmarkList());
+                            Log.d(TAG,"Chord "+ abc);
+                            // your code here
+                            // close the thread
+                            t.cancel();
+                        }
+                    },
+                    300  //0.3초 마다
+            );
+        }
+
+        String restr = abc.replaceAll("[^0-9]","");
+        Log.d(TAG,"Chord11111 "+ restr);
+        //WriteCsv(outputDateStr); //21개의 좌표 전달
+//        soundPool.play(chordSound[1],1,1,1,0,1);
+        int chordIndex = 0;
+        switch(restr){
+
+            case CHORD_C:
+                Log.d(TAG,"Detection Chord_________C "+ abc);
+                chordIndex = 0;
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        chord.setText("Detection Chord_________C ");
+                    }
+                });
+                break;
+            case CHORD_Dm:
+                chordIndex = 2;
+                Log.d(TAG,"Detection Chord_________Dm "+ abc);
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        chord.setText("Detection Chord_________Dm ");
+                    }
+                });
+                break;
+            case CHORD_E:
+                chordIndex = 5;
+                Log.d(TAG,"Detection Chord_________E "+ abc);
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        chord.setText("Detection Chord_________E ");
+                    }
+                });
+                break;
+            case CHORD_F:
+                chordIndex = 1;
+                Log.d(TAG,"Detection Chord_________F "+ abc);
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        chord.setText("Detection Chord_________F ");
+                    }
+                });
+                break;
+            case CHORD_G7:
+                chordIndex = 0;
+                Log.d(TAG,"Detection Chord_________G7 "+ abc);
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        chord.setText("Detection Chord_________G7 ");
+                    }
+                });
+                break;
+            case CHORD_A:
+                chordIndex = 3;
+                Log.d(TAG,"Detection Chord_________A "+ abc);
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        chord.setText("Detection Chord_________A ");
+                    }
+                });
+                break;
+            case CHORD_B:
+                chordIndex = 4;
+                Log.d(TAG,"Detection Chord_________B "+ abc);
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        chord.setText("Detection Chord_________B ");
+                    }
+                });
+
+                //스트로크 재생
+        }
+        ++handIndex;
+        if (multiHandLandmarks.size() == 2) {
+//            soundPool.play(chordSound[1],1,1,1,0,1);
+            if (multiHandLandmarks.get(0).getLandmarkList().get(8).getX() > 0.46){
+                chk=true;
+            }else if (multiHandLandmarks.get(0).getLandmarkList().get(8).getX() <= 0.4 && chk==true){
+                chk = false;;
+                soundPool.play(chordSound[chordIndex],1,1,1,0,1);
             }
-
-
-            String abc = "";
-            abc = h.postRequest(landmarks.getLandmarkList());
-            abc = abc.substring(1,2);
-            Log.d(TAG,"Chord "+ abc);
-
-            //WriteCsv(outputDateStr); //21개의 좌표 전달
-            switch(abc){
-                case CHORD_C:
-                    Log.d(TAG,"Detection Chord_________C "+ abc);
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            chord.setText("Detection Chord_________C ");
-                        }
-                    });
-                    break;
-                case CHORD_Dm:
-                    Log.d(TAG,"Detection Chord_________Dm "+ abc);
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            chord.setText("Detection Chord_________Dm ");
-                        }
-                    });
-                    break;
-                case CHORD_E:
-                    Log.d(TAG,"Detection Chord_________E "+ abc);
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            chord.setText("Detection Chord_________E ");
-                        }
-                    });
-                    break;
-                case CHORD_F:
-                    Log.d(TAG,"Detection Chord_________F "+ abc);
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            chord.setText("Detection Chord_________F ");
-                        }
-                    });
-                    break;
-                case CHORD_G7:
-                    Log.d(TAG,"Detection Chord_________G7 "+ abc);
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            chord.setText("Detection Chord_________G7 ");
-                        }
-                    });
-                    break;
-                case CHORD_A:
-                    Log.d(TAG,"Detection Chord_________A "+ abc);
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            chord.setText("Detection Chord_________A ");
-                        }
-                    });
-                    break;
-                case CHORD_B:
-                    Log.d(TAG,"Detection Chord_________B "+ abc);
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            chord.setText("Detection Chord_________B ");
-                        }
-                    });
-
-
-            }
-            ++handIndex;
         }
         return multiHandLandmarksStr;
     }
