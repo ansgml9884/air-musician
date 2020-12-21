@@ -35,7 +35,7 @@ public class MyMusicActivity extends AppCompatActivity {
     private View view;
     private VideoView videoView;
     private ArrayList<RecordMediaModel> videoList;
-
+    private MediaStoreUtil myMediaStore;
     private View decorView;
     private int	uiOption;
 
@@ -71,7 +71,7 @@ public class MyMusicActivity extends AppCompatActivity {
 
 
         //데이터를 recyclerView에 넘겨줄 List
-        MediaStoreUtil myMediaStore =  MediaStoreUtil.getInstance(getApplicationContext());
+        myMediaStore =  MediaStoreUtil.getInstance(getApplicationContext());
         videoList = myMediaStore.getAll(); // 비디오 전체 리스트 가져오기
 
         Spinner listSpinner  = findViewById(R.id.list_spinner);
@@ -169,4 +169,10 @@ public class MyMusicActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 }
+
+
