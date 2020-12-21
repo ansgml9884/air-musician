@@ -139,7 +139,6 @@ public class MainActivity extends AppCompatActivity {
 //                    Toast.makeText(MainActivity.this, "데이터 수집 시작.", Toast.LENGTH_SHORT).show();
 //                    datacol = true;
 //                }
-                trigger();
 
             }
         });
@@ -182,7 +181,10 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, "Received multi-hand landmarks packet.");
                     List<NormalizedLandmarkList> multiHandLandmarks =
                             PacketGetter.getProtoVector(packet, NormalizedLandmarkList.parser());
+
+
                     if (multiHandLandmarks.size() == 2) {
+//            soundPool.play(chordSound[1],1,1,1,0,1);
                         if (multiHandLandmarks.get(0).getLandmarkList().get(8).getX() > 0.46){
                             chk=true;
                         }else if (multiHandLandmarks.get(0).getLandmarkList().get(8).getX() <= 0.4 && chk==true){
@@ -190,6 +192,8 @@ public class MainActivity extends AppCompatActivity {
                             soundPool.play(chordSound[chordIndex],1,1,1,0,1);
                         }
                     }
+
+                    
                     Log.d(
                             TAG,
                             "[TS:"
@@ -309,7 +313,6 @@ public class MainActivity extends AppCompatActivity {
                 multiHandLandmarksStr +=
                         "\t#Hand landmarks for hand[" + handIndex + "]: " + landmarks.getLandmarkCount() + "\n";
 
-
                 int landmarkIndex = 0;
                 for (NormalizedLandmark landmark : landmarks.getLandmarkList()) {
                     if (landmarkIndex != 0) {
@@ -331,15 +334,28 @@ public class MainActivity extends AppCompatActivity {
                 }
 
 
-
+                Timer t = new java.util.Timer();
+                t.schedule(
+                        new java.util.TimerTask() {
+                            @Override
+                            public void run() {
+                                abc = h.postRequest(landmarks.getLandmarkList());
+                                Log.d(TAG,"Chord "+ abc);
+                                // your code here
+                                // close the thread
+                                t.cancel();
+                            }
+                        },
+                        300  //0.3초 마다
+                );
             }
 
 
             String restr = abc.replaceAll("[^0-9]","");
             Log.d(TAG,"Chord11111 "+ restr);
-//            if(datacol) {
-////                WriteCsv(outputDateStr); //21개의 좌표 전달
-////            }
+            if(datacol) {
+                WriteCsv(outputDateStr); //21개의 좌표 전달
+            }
 //        }
 //        soundPool.play(chordSound[1],1,1,1,0,1);
 
