@@ -1,4 +1,4 @@
-package com.example.mediapipemultihandstrackingapp;
+package com.example.mediapipemultihandstrackingapp.activity;
 
 import android.content.Intent;
 import android.media.AudioManager;
@@ -13,8 +13,11 @@ import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.content.SharedPreferences;
-import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.mediapipemultihandstrackingapp.R;
+
 import me.itangqi.waveloadingview.WaveLoadingView;
 
 public class SettingActivity extends AppCompatActivity {

@@ -57,8 +57,11 @@
         android:layout_height="wrap_content"
         android:text="chord"
         android:textColor="#ff0000"
+        android:textSize="30sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/imageView3"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/preview_display_layout"
         app:layout_constraintTop_toTopOf="@+id/preview_display_layout" />
 </androidx.constraintlayout.widget.ConstraintLayout>

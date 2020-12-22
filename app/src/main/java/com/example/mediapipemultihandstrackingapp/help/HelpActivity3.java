@@ -9,7 +9,7 @@ import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.mediapipemultihandstrackingapp.MainMenuActivity;
+import com.example.mediapipemultihandstrackingapp.activity.MainMenuActivity;
 import com.example.mediapipemultihandstrackingapp.R;
 
 public class HelpActivity3 extends AppCompatActivity {
@@ -39,7 +39,7 @@ public class HelpActivity3 extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(
                         getApplicationContext(),
-                        HelpActivity2.class);
+                        HelpActivity6.class);
                 startActivity(intent);
             }
         });

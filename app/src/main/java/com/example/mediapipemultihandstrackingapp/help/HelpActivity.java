@@ -9,8 +9,7 @@ import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.mediapipemultihandstrackingapp.MainMenuActivity;
-import com.example.mediapipemultihandstrackingapp.MyMusicActivity;
+import com.example.mediapipemultihandstrackingapp.activity.MainMenuActivity;
 import com.example.mediapipemultihandstrackingapp.R;
 
 public class HelpActivity extends AppCompatActivity {

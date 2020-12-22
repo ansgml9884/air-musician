@@ -9,7 +9,7 @@ import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.mediapipemultihandstrackingapp.MainMenuActivity;
+import com.example.mediapipemultihandstrackingapp.activity.MainMenuActivity;
 import com.example.mediapipemultihandstrackingapp.R;
 
 public class HelpActivity5 extends AppCompatActivity {
@@ -42,6 +42,8 @@ public class HelpActivity5 extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
         ImageButton homeBtn = (ImageButton)findViewById(R.id.home_img_btn);
         homeBtn.setOnClickListener(new View.OnClickListener() {
             @Override

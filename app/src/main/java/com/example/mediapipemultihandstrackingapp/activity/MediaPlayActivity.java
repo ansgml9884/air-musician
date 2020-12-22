@@ -5,6 +5,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.VideoView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import com.example.mediapipemultihandstrackingapp.R;
 public class MediaPlayActivity extends AppCompatActivity {
 
     private VideoView videoView;
+    private ImageView imageView;
     private Uri mediaUri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +24,9 @@ public class MediaPlayActivity extends AppCompatActivity {
         Intent intent = getIntent() ;
         // No 값을 int 타입에서 String 타입으로 변환하여 표시.
         videoView = findViewById(R.id.videoView) ;
+        imageView = findViewById(R.id.player_preview);
+        imageView.bringToFront();
+
         String url = intent.getStringExtra("videoUrl") ;
         mediaUri = Uri.parse(url);
         //비디오뷰 재생,일시정지 등 할수있는 컨트롤바

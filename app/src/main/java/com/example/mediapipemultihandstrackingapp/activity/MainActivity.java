@@ -1,4 +1,4 @@
-package com.example.mediapipemultihandstrackingapp;
+package com.example.mediapipemultihandstrackingapp.activity;
 
 import android.content.Intent;
 import android.graphics.SurfaceTexture;
@@ -15,12 +15,15 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
+import android.view.animation.RotateAnimation;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.mediapipemultihandstrackingapp.R;
 import com.example.mediapipemultihandstrackingapp.util.HttpConnectionManager;
 import com.example.mediapipemultihandstrackingapp.util.SoundManager;
 import com.google.mediapipe.components.CameraHelper;
@@ -28,7 +31,6 @@ import com.google.mediapipe.components.CameraXPreviewHelper;
 import com.google.mediapipe.components.ExternalTextureConverter;
 import com.google.mediapipe.components.FrameProcessor;
 import com.google.mediapipe.components.PermissionHelper;
-import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmark;
 import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmarkList;
 import com.google.mediapipe.framework.AndroidAssetUtil;
 import com.google.mediapipe.framework.PacketGetter;
@@ -48,6 +50,7 @@ import java.util.Timer;
 public class MainActivity extends AppCompatActivity {
     private SoundPool soundPool;
     private int[] chordSound = new int[6];
+    private int[] recordingSound = new int[2];
     boolean chk = false;
     private int	uiOption;
     private View decorView;
@@ -114,6 +117,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
+        chord = (TextView)findViewById(R.id.chord_view);
+        RotateAnimation rotate= (RotateAnimation) AnimationUtils.loadAnimation(this,R.anim.rotation);
+        chord.setAnimation(rotate);
         try {
             setUpMediaRecorder();
         } catch (IOException e) {
@@ -182,20 +188,16 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, "Received multi-hand landmarks packet.");
                     List<NormalizedLandmarkList> multiHandLandmarks =
                             PacketGetter.getProtoVector(packet, NormalizedLandmarkList.parser());
+                    getMultiHandLandmarksDebugString(multiHandLandmarks);
                     if (multiHandLandmarks.size() == 2) {
-                        if (multiHandLandmarks.get(0).getLandmarkList().get(8).getX() > 0.46){
+////            soundPool.play(chordSound[1],1,1,1,0,1);
+                        if (multiHandLandmarks.get(0).getLandmarkList().get(8).getX() > 0.5){
                             chk=true;
-                        }else if (multiHandLandmarks.get(0).getLandmarkList().get(8).getX() <= 0.4 && chk==true){
+                        }else if (multiHandLandmarks.get(0).getLandmarkList().get(8).getX() <= 0.5 && chk==true){
                             chk = false;;
                             soundPool.play(chordSound[chordIndex],1,1,1,0,1);
                         }
                     }
-                    Log.d(
-                            TAG,
-                            "[TS:"
-                                    + packet.getTimestamp()
-                                    + "] "
-                                    + getMultiHandLandmarksDebugString(multiHandLandmarks));
                 });
         PermissionHelper.checkAndRequestCameraPermissions(this);
     }
@@ -216,10 +218,14 @@ public class MainActivity extends AppCompatActivity {
 
         chordSound[0] = soundPool.load(getApplicationContext(), R.raw.chord_c, 1);
         chordSound[1] = soundPool.load(getApplicationContext(), R.raw.chord_f, 1);
-        chordSound[2] = soundPool.load(getApplicationContext(), R.raw.chord_dm, 1);
+        chordSound[2] = soundPool.load(getApplicationContext(), R.raw.chord_d, 1);
         chordSound[3] = soundPool.load(getApplicationContext(), R.raw.chord_a, 1);
         chordSound[4] = soundPool.load(getApplicationContext(), R.raw.chord_d, 1);
         chordSound[5] = soundPool.load(getApplicationContext(), R.raw.chord_em, 1);
+
+        recordingSound[0] = soundPool.load(getApplicationContext(), R.raw.recording_start, 1);
+        recordingSound[1] = soundPool.load(getApplicationContext(), R.raw.recording_stop, 1);
+
 
     }
 
@@ -306,111 +312,108 @@ public class MainActivity extends AppCompatActivity {
         int handIndex = 0;
 //        if(multiHandLandmarks.size() == 1) {
             for (NormalizedLandmarkList landmarks : multiHandLandmarks) {
-                multiHandLandmarksStr +=
-                        "\t#Hand landmarks for hand[" + handIndex + "]: " + landmarks.getLandmarkCount() + "\n";
-
+//                multiHandLandmarksStr +=
+//                        "\t#Hand landmarks for hand[" + handIndex + "]: " + landmarks.getLandmarkCount() + "\n";
 
                 int landmarkIndex = 0;
-                for (NormalizedLandmark landmark : landmarks.getLandmarkList()) {
-                    if (landmarkIndex != 0) {
-                        outputDateStr += ",";
-                    }
-                    String xyzStr = landmark.getX()
-                            + ", "
-                            + landmark.getY()
-                            + ", "
-                            + landmark.getZ();
-                    outputDateStr += xyzStr;
-                    multiHandLandmarksStr +=
-                            "\t\tLandmark ["
-                                    + landmarkIndex
-                                    + "]: ("
-                                    + xyzStr
-                                    + ")\n";
-                    ++landmarkIndex;
-                }
+//                for (NormalizedLandmark landmark : landmarks.getLandmarkList()) {
+//                    if (landmarkIndex != 0) {
+//                        outputDateStr += ",";
+//                    }
+//                    String xyzStr = landmark.getX()
+//                            + ", "
+//                            + landmark.getY()
+//                            + ", "
+//                            + landmark.getZ();
+//                    outputDateStr += xyzStr;
+//                    multiHandLandmarksStr +=
+//                            "\t\tLandmark ["
+//                                    + landmarkIndex
+//                                    + "]: ("
+//                                    + xyzStr
+//                                    + ")\n";
+//                    ++landmarkIndex;
+//                }
 
 
+                if (handIndex==1){
+                    Timer t = new java.util.Timer();
+                    t.schedule(
+                            new java.util.TimerTask() {
+                                @Override
+                                public void run() {
+                                    abc = h.postRequest(landmarks.getLandmarkList());
+                                    Log.d(TAG,"Chord "+ abc);
+                                    // your code here
+                                    // close the thread
+                                    t.cancel();
+                                }
+                            },1
+                              //0.3초 마다
+                    );}
 
-            }
+
 
 
             String restr = abc.replaceAll("[^0-9]","");
             Log.d(TAG,"Chord11111 "+ restr);
 //            if(datacol) {
-////                WriteCsv(outputDateStr); //21개의 좌표 전달
-////            }
+//                WriteCsv(outputDateStr); //21개의 좌표 전달
+//            }
 //        }
 //        soundPool.play(chordSound[1],1,1,1,0,1);
 
             switch(restr){
-
                 case CHORD_C:
-                    Log.d(TAG,"Detection Chord_________C "+ abc);
+                    Log.d(TAG,"C "+ abc);
                     chordIndex = 0;
                     runOnUiThread(new Runnable() {
                         public void run() {
-                            chord.setText("Detection Chord_________C ");
+                            chord.setText("C    ");
                         }
                     });
                     break;
                 case CHORD_Dm:
                     chordIndex = 2;
-                    Log.d(TAG,"Detection Chord_________Dm "+ abc);
+                    Log.d(TAG,"Dm "+ abc);
                     runOnUiThread(new Runnable() {
                         public void run() {
-                            chord.setText("Detection Chord_________Dm ");
+                            chord.setText("Dm   ");
                         }
                     });
                     break;
                 case CHORD_E:
                     chordIndex = 5;
-                    Log.d(TAG,"Detection Chord_________E "+ abc);
+                    Log.d(TAG,"E "+ abc);
                     runOnUiThread(new Runnable() {
                         public void run() {
-                            chord.setText("Detection Chord_________E ");
+                            chord.setText("E    ");
                         }
                     });
                     break;
                 case CHORD_F:
                     chordIndex = 1;
-                    Log.d(TAG,"Detection Chord_________F "+ abc);
+                    Log.d(TAG,"F "+ abc);
                     runOnUiThread(new Runnable() {
                         public void run() {
-                            chord.setText("Detection Chord_________F ");
-                        }
-                    });
-                    break;
-                case CHORD_G7:
-                    chordIndex = 0;
-                    Log.d(TAG,"Detection Chord_________G7 "+ abc);
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            chord.setText("Detection Chord_________G7 ");
+                            chord.setText("F ");
                         }
                     });
                     break;
                 case CHORD_A:
                     chordIndex = 3;
-                    Log.d(TAG,"Detection Chord_________A "+ abc);
+                    Log.d(TAG,"A "+ abc);
                     runOnUiThread(new Runnable() {
                         public void run() {
-                            chord.setText("Detection Chord_________A ");
+                            chord.setText("A    ");
                         }
                     });
                     break;
-                case CHORD_B:
-                    chordIndex = 4;
-                    Log.d(TAG,"Detection Chord_________B "+ abc);
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            chord.setText("Detection Chord_________B ");
-                        }
-                    });
-
-//                    //스트로크 재생
             }
+
             ++handIndex;
+            }
+
 
             return multiHandLandmarksStr;
     }
@@ -425,14 +428,19 @@ public class MainActivity extends AppCompatActivity {
     public void trigger() {
 
         if(recording){
-            mMediaRecorder.stop();
-            mMediaRecorder.release();
+            //mMediaRecorder.stop();
+           // mMediaRecorder.release();
             recording = false;
             Toast.makeText(MainActivity.this, "녹화가 종료되었습니다.", Toast.LENGTH_SHORT).show();
+            soundPool.play(recordingSound[1],1,1,1,0,1);
+
         }else{
-            mMediaRecorder.start();
+            soundPool.play(recordingSound[0],1,1,1,0,1);
+           // mMediaRecorder.start();
             recording = true;
             Toast.makeText(MainActivity.this, "녹화가 시작되었습니다.", Toast.LENGTH_SHORT).show();
+
+
         }
     }
 

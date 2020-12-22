@@ -5,4 +5,15 @@
         <item>Video</item>
         <item>Audio</item>
     </string-array>
+
+
+    <string-array name="chord_array">
+        <item>A</item>
+        <item>Em</item>
+        <item>D</item>
+        <item>C</item>
+        <item>F</item>
+        <item>B</item>
+        <item>G7</item>
+    </string-array>
 </resources>

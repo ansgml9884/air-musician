@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -11,10 +12,23 @@
         app:layout_constraintTop_toTopOf="@id/up_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="4. 연주앨범 보기"
+        android:text="2. 코드설명       "
         android:layout_marginStart="20dp"
         android:layout_marginTop="45dp"
         style="@style/title"/>
+
+    <Spinner
+        android:id="@+id/chord_list_spinner"
+        android:layout_width="170dp"
+        android:layout_height="30dp"
+
+        android:background="@drawable/spinner_custom"
+        app:layout_constraintBottom_toTopOf="@+id/leftBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.713"
+        app:layout_constraintStart_toEndOf="@+id/settingTitle"
+        app:layout_constraintTop_toTopOf="@+id/up_tv"
+        app:layout_constraintVertical_bias="0.505" />
 
     <ImageView
         android:id="@+id/up_tv"
@@ -36,6 +50,32 @@
         android:layout_marginTop="2dp"
         />
 
+
+    <ImageView
+        android:id="@+id/chord_image"
+        android:layout_width="177dp"
+        android:layout_height="163dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.187"
+        app:layout_constraintStart_toEndOf="@+id/leftBtn"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.669">
+
+
+    </ImageView>
+
+    <ImageView
+        android:id="@+id/chord_real_image"
+        android:layout_width="177dp"
+        android:layout_height="163dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.278"
+        app:layout_constraintStart_toEndOf="@+id/chord_image"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.669" />
+
     <ImageButton
         android:id="@+id/leftBtn"
         android:layout_width="60dp"
@@ -45,17 +85,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:background="@drawable/left_arrow_customise"
         android:layout_marginLeft="20dp"
-        />
-
-    <ImageView
-        android:id="@+id/square1"
-        android:layout_width="530dp"
-        android:layout_height="220dp"
-        android:background="@drawable/mymusic_image"
-        app:layout_constraintLeft_toRightOf="@id/leftBtn"
-        app:layout_constraintRight_toLeftOf="@id/rightBtn"
-        app:layout_constraintTop_toBottomOf="@id/up_tv"
-        android:layout_marginTop="70dp"
         />
 
 
@@ -69,5 +98,7 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginRight="20dp"
         />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

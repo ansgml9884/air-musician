@@ -93,6 +93,7 @@ public class MyMusicListAdapter extends RecyclerView.Adapter<MyMusicListAdapter.
                         // 리스너 객체의 메서드 호출.
                         if (mListener != null) {
                             mListener.onPlayClick(v, pos) ;
+                            playBtn.setAlpha(20);
 
                         }
                     }
