@@ -71,7 +71,7 @@
         app:wlv_waveAmplitude="70"
         app:wlv_waveColor="@android:color/holo_blue_dark" />
 
-    <com.example.mediapipemultihandstrackingapp.OutlineTextView
+    <com.example.mediapipemultihandstrackingapp.model.OutlineTextView
         android:id="@+id/instrumentsName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -97,7 +97,7 @@
         android:layout_marginBottom="30dp"
         />
 
-    <com.example.mediapipemultihandstrackingapp.OutlineTextView
+    <com.example.mediapipemultihandstrackingapp.model.OutlineTextView
         android:id="@+id/recordName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -144,7 +144,7 @@
 
     </RadioGroup>
 
-    <com.example.mediapipemultihandstrackingapp.OutlineTextView
+    <com.example.mediapipemultihandstrackingapp.model.OutlineTextView
         android:id="@+id/metronomeName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -170,7 +170,7 @@
         />
 
 
-    <com.example.mediapipemultihandstrackingapp.OutlineTextView
+    <com.example.mediapipemultihandstrackingapp.model.OutlineTextView
         android:id="@+id/soundName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

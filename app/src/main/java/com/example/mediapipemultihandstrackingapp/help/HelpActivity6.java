@@ -13,7 +13,7 @@ import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.mediapipemultihandstrackingapp.MainMenuActivity;
+import com.example.mediapipemultihandstrackingapp.activity.MainMenuActivity;
 import com.example.mediapipemultihandstrackingapp.R;
 
 public class HelpActivity6  extends AppCompatActivity {

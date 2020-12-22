@@ -38,7 +38,7 @@
         android:theme="@style/AppTheme.NoActionBar"
         >
         <activity
-            android:name=".SplashActivity"
+            android:name=".activity.SplashActivity"
             android:exported="true"
             android:screenOrientation="landscape">
             <intent-filter>
@@ -48,13 +48,13 @@
         </activity>
         <activity android:name=".activity.MediaPlayActivity"
             android:screenOrientation="landscape" />
-        <activity android:name=".MainActivity"
+        <activity android:name=".activity.MainActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".MainMenuActivity"
+        <activity android:name=".activity.MainMenuActivity"
             android:screenOrientation="landscape"/>
-        <activity android:name=".SettingActivity"
+        <activity android:name=".activity.SettingActivity"
             android:screenOrientation="landscape"/>
-        <activity android:name=".MyMusicActivity"
+        <activity android:name=".activity.MyMusicActivity"
             android:screenOrientation="landscape"/>
         <activity android:name=".help.HelpActivity"
             android:screenOrientation="landscape"/>
@@ -68,9 +68,9 @@
             android:screenOrientation="landscape"/>
         <activity android:name=".help.HelpActivity6"
             android:screenOrientation="landscape"/>
-        <activity android:name=".RecordAtivity"
+        <activity android:name=".activity.RecordAtivity"
             android:screenOrientation="landscape"/>
-        <activity android:name=".DeveloperActivity"
+        <activity android:name=".activity.DeveloperActivity"
             android:screenOrientation="landscape"
             android:usesCleartextTraffic="true"/>
 

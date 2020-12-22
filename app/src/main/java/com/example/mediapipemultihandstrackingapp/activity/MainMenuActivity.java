@@ -1,4 +1,4 @@
-package com.example.mediapipemultihandstrackingapp;
+package com.example.mediapipemultihandstrackingapp.activity;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -20,6 +20,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.example.mediapipemultihandstrackingapp.BuildConfig;
+import com.example.mediapipemultihandstrackingapp.R;
 import com.example.mediapipemultihandstrackingapp.help.HelpActivity;
 import com.scwang.wave.MultiWaveHeader;
 

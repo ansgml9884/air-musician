@@ -1,4 +1,4 @@
-package com.example.mediapipemultihandstrackingapp;
+package com.example.mediapipemultihandstrackingapp.activity;
 
 import android.content.Intent;
 import android.media.MediaScannerConnection;
@@ -19,14 +19,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mediapipemultihandstrackingapp.activity.MediaPlayActivity;
+import com.example.mediapipemultihandstrackingapp.R;
 import com.example.mediapipemultihandstrackingapp.adapter.MyMusicListAdapter;
 import com.example.mediapipemultihandstrackingapp.model.RecordMediaModel;
 import com.example.mediapipemultihandstrackingapp.util.MediaStoreUtil;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 public class MyMusicActivity extends AppCompatActivity {
     private RecyclerView recyclerView;

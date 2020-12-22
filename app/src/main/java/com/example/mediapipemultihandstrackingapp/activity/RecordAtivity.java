@@ -1,4 +1,4 @@
-package com.example.mediapipemultihandstrackingapp;
+package com.example.mediapipemultihandstrackingapp.activity;
 
 import android.Manifest;
 import android.hardware.Camera;
@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.mediapipemultihandstrackingapp.R;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 

@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
-import com.example.mediapipemultihandstrackingapp.MainMenuActivity;
+import com.example.mediapipemultihandstrackingapp.activity.MainMenuActivity;
 import com.example.mediapipemultihandstrackingapp.R;
 
 public class HelpActivity2 extends AppCompatActivity {

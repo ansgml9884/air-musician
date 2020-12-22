@@ -1,4 +1,4 @@
-package com.example.mediapipemultihandstrackingapp;
+package com.example.mediapipemultihandstrackingapp.model;
 
 import android.view.animation.Interpolator;
 

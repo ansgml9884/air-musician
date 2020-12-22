@@ -1,4 +1,4 @@
-package com.example.mediapipemultihandstrackingapp;
+package com.example.mediapipemultihandstrackingapp.activity;
 
 import android.content.Intent;
 import android.graphics.SurfaceTexture;
@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.mediapipemultihandstrackingapp.R;
 import com.example.mediapipemultihandstrackingapp.util.HttpConnectionManager;
 import com.example.mediapipemultihandstrackingapp.util.SoundManager;
 import com.google.mediapipe.components.CameraHelper;
@@ -30,7 +31,6 @@ import com.google.mediapipe.components.CameraXPreviewHelper;
 import com.google.mediapipe.components.ExternalTextureConverter;
 import com.google.mediapipe.components.FrameProcessor;
 import com.google.mediapipe.components.PermissionHelper;
-import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmark;
 import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmarkList;
 import com.google.mediapipe.framework.AndroidAssetUtil;
 import com.google.mediapipe.framework.PacketGetter;

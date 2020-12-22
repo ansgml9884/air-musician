@@ -1,4 +1,4 @@
-package com.example.mediapipemultihandstrackingapp;
+package com.example.mediapipemultihandstrackingapp.activity;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -14,6 +14,7 @@ import android.widget.VideoView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.example.mediapipemultihandstrackingapp.R;
 
 public class DeveloperActivity extends AppCompatActivity {
     VideoView videoView;
