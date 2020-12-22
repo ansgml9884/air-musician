@@ -11,7 +11,7 @@
         app:layout_constraintTop_toTopOf="@id/up_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="2. 녹화/녹음 하기"
+        android:text="3. 녹화/녹음 하기"
         android:layout_marginStart="20dp"
         android:layout_marginTop="45dp"
         style="@style/title"/>

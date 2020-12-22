@@ -11,7 +11,7 @@
         app:layout_constraintTop_toTopOf="@id/up_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="4. 환경설정"
+        android:text="5. 환경설정"
         android:layout_marginStart="20dp"
         android:layout_marginTop="45dp"
         style="@style/title"/>
@@ -46,29 +46,19 @@
         android:background="@drawable/left_arrow_customise"
         android:layout_marginLeft="20dp"
         />
-    
+
     <ImageView
         android:id="@+id/square1"
         android:layout_width="530dp"
         android:layout_height="240dp"
+        android:layout_marginTop="72dp"
         android:background="@drawable/setting_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.597"
         app:layout_constraintLeft_toRightOf="@id/leftBtn"
         app:layout_constraintRight_toLeftOf="@id/rightBtn"
-        app:layout_constraintTop_toBottomOf="@id/up_tv"
-        android:layout_marginTop="70dp"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/up_tv" />
 
-
-
-    <ImageButton
-        android:id="@+id/rightBtn"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:background="@drawable/right_arrow_customise"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="@id/settingTitle"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginRight="20dp"
-        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

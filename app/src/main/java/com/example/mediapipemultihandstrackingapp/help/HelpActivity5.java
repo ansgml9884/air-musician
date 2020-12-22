@@ -42,6 +42,8 @@ public class HelpActivity5 extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
         ImageButton homeBtn = (ImageButton)findViewById(R.id.home_img_btn);
         homeBtn.setOnClickListener(new View.OnClickListener() {
             @Override

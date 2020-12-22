@@ -39,7 +39,7 @@ public class HelpActivity3 extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(
                         getApplicationContext(),
-                        HelpActivity2.class);
+                        HelpActivity6.class);
                 startActivity(intent);
             }
         });

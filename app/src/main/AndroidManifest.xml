@@ -66,6 +66,8 @@
             android:screenOrientation="landscape"/>
         <activity android:name=".help.HelpActivity5"
             android:screenOrientation="landscape"/>
+        <activity android:name=".help.HelpActivity6"
+            android:screenOrientation="landscape"/>
         <activity android:name=".RecordAtivity"
             android:screenOrientation="landscape"/>
         <activity android:name=".DeveloperActivity"
