@@ -1,6 +1,7 @@
 # AirMusician
 
 <img src = "https://user-images.githubusercontent.com/68583697/103190778-c00ab480-4915-11eb-96fd-777a3cd755f0.png" width="300px">
+플레이데이터 Pose-Estimation AI 개발자 교육 과정 final 프로젝트
 AI 포즈 인식 기반 가상 악기 앱 개발 프로젝트
 
 ## 팀원소개
@@ -45,6 +46,10 @@ AI 포즈 인식 기반 가상 악기 앱 개발 프로젝트
         </tr>
     </tbody>
 </table>
+
+### 프로젝트 기간 
+2020-10-17 ~ 2020-12-23
+<img src = "https://user-images.githubusercontent.com/68583697/103226691-0ee53800-4970-11eb-8eb1-cb851b4c93bb.PNGG" width="750px">
 
 ## 사용언어, 기술스택
 ![Generic badge](https://img.shields.io/badge/platform-Mobile-green.svg) ![Generic badge](https://img.shields.io/badge/OS-Android-brightgreen.svg)
