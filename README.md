@@ -49,7 +49,7 @@ AI 포즈 인식 기반 가상 악기 앱 개발 프로젝트
 
 ### 프로젝트 기간 
 2020-10-17 ~ 2020-12-23
-<img src = "https://user-images.githubusercontent.com/68583697/103226691-0ee53800-4970-11eb-8eb1-cb851b4c93bb.PNGG" width="750px">
+<img src = "https://user-images.githubusercontent.com/68583697/103226691-0ee53800-4970-11eb-8eb1-cb851b4c93bb.PNG" width="750px">
 
 ## 사용언어, 기술스택
 ![Generic badge](https://img.shields.io/badge/platform-Mobile-green.svg) ![Generic badge](https://img.shields.io/badge/OS-Android-brightgreen.svg)
