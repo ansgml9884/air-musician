@@ -22,7 +22,7 @@ AI 포즈 인식 기반 가상 악기 앱 개발 프로젝트
             <td >• Http통신 구현<br>• 데이터셋 수집</td>
         </tr>
         <tr>
-            <td rowspan="2"> 백엔드 </td>
+            <td rowspan="3"> 백엔드 </td>
             <td ><a href = "" target = "blank" > 이재형 </a></td>
             <td >- AI환경 셋팅 및 모델 조사<br>- AI와 App 연동</td>
             <td >• Http통신 구현<br>• 데이터셋 수집</td>
