@@ -29,14 +29,12 @@ AI 포즈 인식 기반 가상 악기 앱 개발 프로젝트
             <td >• Http통신 구현<br>• 데이터셋 수집</td>
         </tr>
         <tr>
-            <td rowspan="3"><a href = "https://github.com/parkjunoo" target = "blank" > 박준수 </a></td>
-            <td rowspan="2">- 안드로이드  내부 DB구현</td>
-            <td rowspan="2">• MediaStore를 활용한 내부 저장소 DB 구현</td>
+            <td rowspan="2"><a href = "https://github.com/parkjunoo" target = "blank" > 박준수 </a></td>
+            <td >- 안드로이드  내부 DB구현</td>
+            <td >• MediaStore를 활용한 내부 저장소 DB 구현</td>
         </tr>
         <tr>
-          <td rowspan="3"> 프론트엔드 </td>
-        </tr>
-        <tr>
+            <td rowspan="2"> 프론트엔드 </td>
             <td rowspan="2" >- Android App 설계 및 개발</td>
             <td >• SoundPool 효과음 출력 구현<br>• 오디오 녹음 기능 구현</td>
         </tr>
