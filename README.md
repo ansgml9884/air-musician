@@ -71,9 +71,15 @@ AI 포즈 인식 기반 가상 악기 앱 개발 프로젝트
 
 
 ## 결과물
+
+### 시연화면
+
 <img src = "https://user-images.githubusercontent.com/68583697/103270261-cd4d9f00-49fa-11eb-9f47-5b6d7ccbf6d2.PNG" width="750px"><br>
 <img src = "https://user-images.githubusercontent.com/68583697/103270264-cd4d9f00-49fa-11eb-8eca-adfcfde5d7a7.PNG" width="750px"><br>
 <img src = "https://user-images.githubusercontent.com/68583697/103270254-cc1c7200-49fa-11eb-9ffa-5b503ff0bdac.PNG" width="750px"><br>
+
+### 시연영상
+[![시연영상](http://img.youtube.com/vi/kM7eub2DjHs/0.jpg)](https://www.youtube.com/watch?v=kM7eub2DjHs) 
 
 This is an example of using MediaPipe AAR in Android Studio with Gradle.
 
